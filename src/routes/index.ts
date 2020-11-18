@@ -1,10 +1,9 @@
 // Module Import with Import
-import express from "express";
+import express from 'express'
 
 // Module Initialize
-export const router = express.Router();
+export const router = express.Router()
 
-router.get('/', function(req, res, next) {
-  res.json({message: 'Hello Aha!'});
-});
-
+router.get('/', function (req: express.Request, res: express.Response, next: express.NextFunction) {
+  res.json({ message: 'Hello Aha!' })
+})
