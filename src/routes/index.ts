@@ -1,9 +1,9 @@
 // Module Import with Import
 import express from 'express'
+import { index } from '../controllers/index.controller'
 
 // Module Initialize
 export const router = express.Router()
 
-router.get('/', function (req: express.Request, res: express.Response, next: express.NextFunction) {
-  res.json({ message: 'Hello Aha!' })
-})
+/* GET home page. */
+router.get('/', index)
