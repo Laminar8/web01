@@ -2,6 +2,7 @@
 import express from 'express'
 import createError, { HttpError } from 'http-errors'
 import logger from 'morgan'
+import cors from 'cors'
 // import path from 'path'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
@@ -22,6 +23,7 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(cors())
 
 // App use Router
 app.use('/', indexRouter)
