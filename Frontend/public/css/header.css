@@ -1,0 +1,90 @@
+header {
+  text-align: right;
+}
+
+header .header {
+  margin-top: 15px;
+}
+
+header .header .headerIcon {
+  display: inline;
+  margin-left: 10px;
+}
+
+header .header button {
+  border: 0;
+  color: #bdbdc4;
+  border-radius: 15px;
+  background: #ffffff;
+  box-shadow: inset 12px 12px 27px #dbdbdb, inset -12px -12px 27px #ffffff;
+  padding: 0 20px;
+}
+
+header .header button:hover {
+  color: #4e6ab8;
+}
+
+header .header button .iconClass {
+  display: inline-flex;
+  font-size: 14px;
+  margin-top: 8px;
+  line-height: 30px;
+}
+
+header .header button .iconClass i {
+  padding-right: 10px;
+  font-size: 20px;
+}
+
+header .header button .arrow {
+  display: inline-flex;
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+/* media query*/
+/* 화면 너비 0 ~ 1600px */
+@media (max-width: 1600px) {
+  .container {
+    width: 100%;
+  }
+  .row {
+    padding: 0 15px;
+  }
+  .title .btn {
+    right: 5px;
+  }
+}
+
+/* 화면 너비 0 ~ 1024px */
+@media (max-width: 1024px) {
+  header {
+    background-color: red;
+    text-align: right;
+  }
+  .header span {
+    font-size: 15px;
+    color: white;
+    padding-right: 25px;
+  }
+}
+
+/* 화면 너비 0 ~ 960px */
+@media (max-width: 960px) {
+}
+
+/* 화면 너비 0 ~ 768px */
+@media (max-width: 768px) {
+}
+
+/* 화면 너비 0 ~ 600px */
+@media (max-width: 600px) {
+}
+
+/* 화면 너비 0 ~ 480px */
+@media (max-width: 480px) {
+}
+
+/* 화면 너비 0 ~ 320px */
+@media (max-width: 320px) {
+}

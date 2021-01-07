@@ -1,7 +1,7 @@
 <script lang="typescript">
-    import Header from './header.svelte'
+    import Header from "./header.svelte";
 </script>
 
-<div id="wrapper">
+<div id="container">
     <Header />
 </div>
