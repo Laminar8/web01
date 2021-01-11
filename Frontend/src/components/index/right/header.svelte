@@ -15,19 +15,20 @@
     let count = 0;
 
     function handleMouseOver(event) {
+        console.log(event);
         while (event.path[count].tagName != "BUTTON") {
             count += 1;
-            console.log(count);
         }
         event.path[count].style.color = "#4e6ab8";
+        event.path[count].style.background = "rgba(255, 255, 255, 0.6)";
         if (event.path[count].children.length == 2) {
             console.log(event.path[count].children[1].style);
             event.path[count].children[1].style.transform = "rotate(180deg)";
         }
-        console.log(event);
     }
     function handleMouseOut(event) {
         event.path[count].style.color = "#bdbdc4";
+        event.path[count].style.background = "rgba(255, 255, 255, 0.15)";
         if (event.path[count].children.length == 2) {
             console.log(event.path[count].children[1].style);
             event.path[count].children[1].style.transform = "";

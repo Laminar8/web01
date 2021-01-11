@@ -43,7 +43,7 @@ app.use(function (req: express.Request, res: express.Response, next: express.Nex
 })
 
 // error handler
-app.use(function (err: HttpError, req: express.Request, res: express.Response, next: express.NextFunction) {
+app.use(function (err: HttpError, req: express.Request, res: express.Response) {
   let apiError = err
 
   if (!err.status) {

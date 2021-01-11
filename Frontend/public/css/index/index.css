@@ -1,0 +1,27 @@
+#container {
+  display: grid;
+  gap: 45px;
+  margin: 15px;
+  grid-template-columns: 6fr 5fr 7fr;
+  grid-template-areas: "left mid right";
+}
+
+left.item {
+  grid-area: left;
+}
+
+mid.item {
+  grid-area: mid;
+}
+
+right.item {
+  grid-area: right;
+}
+
+body {
+  background: url("../../images/background.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}

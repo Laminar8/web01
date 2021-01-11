@@ -1,7 +1,11 @@
 <script lang="typescript">
-    import Header from "./header.svelte";
+    import Left from "./left.svelte";
+    import Mid from "./mid.svelte";
+    import Right from "./right.svelte";
 </script>
 
 <div id="container">
-    <Header />
+    <Left />
+    <Mid />
+    <Right />
 </div>

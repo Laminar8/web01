@@ -2,10 +2,10 @@
 import express from 'express'
 
 // Router Import
-import { router as usersRouter } from './users.route'
+import { router as weatherRouter } from './weather.route'
 
 // Variable Initialize
 const router = express.Router()
-router.use(usersRouter)
+router.use(weatherRouter)
 
 export default router
