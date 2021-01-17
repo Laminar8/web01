@@ -15,22 +15,31 @@
     let count = 0;
 
     function handleMouseOver(event) {
-        console.log(event);
+        // Cursor Effect
+        const mouseCursor: HTMLDivElement = document.querySelector(".cursor");
+        mouseCursor.classList.add("cursor-grow");
+        mouseCursor.style.zIndex = "-1";
+
+        // Hover Effect
         while (event.path[count].tagName != "BUTTON") {
             count += 1;
         }
         event.path[count].style.color = "#4e6ab8";
         event.path[count].style.background = "rgba(255, 255, 255, 0.6)";
         if (event.path[count].children.length == 2) {
-            console.log(event.path[count].children[1].style);
             event.path[count].children[1].style.transform = "rotate(180deg)";
         }
     }
     function handleMouseOut(event) {
+        // Cursor Effect
+        const mouseCursor: HTMLDivElement = document.querySelector(".cursor");
+        mouseCursor.classList.remove("cursor-grow");
+        mouseCursor.style.zIndex = "1000";
+
+        // Hover Effect
         event.path[count].style.color = "#bdbdc4";
         event.path[count].style.background = "rgba(255, 255, 255, 0.15)";
         if (event.path[count].children.length == 2) {
-            console.log(event.path[count].children[1].style);
             event.path[count].children[1].style.transform = "";
         }
         count = 0;

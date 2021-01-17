@@ -1,0 +1,34 @@
+/* 기본 색상 변수에 담기 */
+html {
+  --color-texta: #1d1d1d;
+  --color-textb: #c5dadf;
+}
+
+/* 시스템 커서 안 보이게 숨기기 */
+
+body {
+  cursor: none;
+}
+
+/* 커스텀 커서 스타일 정의해주기 */
+.cursor {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 1000;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: all 0.3s ease;
+  transition-property: background, transform;
+  transform-origin: 100% 100%;
+  background-color: var(--color-textb);
+  opacity: 75%;
+  background-size: cover;
+}
+
+.cursor-grow {
+  transform: scale(2);
+  background-color: var(--color-texta);
+  opacity: 100%;
+}

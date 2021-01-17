@@ -1,7 +1,8 @@
 import moment from 'moment'
 
-export const Today = (): [string, string] => {
+export const Today = (): string[] => {
   let base_date, base_time
+  let next_date = moment().add(1, 'day').format('YYYYMMDD')
   const time = Number(moment().format('HHmm'))
   if (time > 211 && time <= 510) {
     base_date = moment().format('YYYYMMDD')
@@ -24,12 +25,17 @@ export const Today = (): [string, string] => {
   } else if (time > 2011 && time <= 2310) {
     base_date = moment().format('YYYYMMDD')
     base_time = '2000'
+  } else if (time > 2311 && time <= 2359) {
+    next_date = moment().add(1, 'day').format('YYYYMMDD')
+    base_date = moment().format('YYYYMMDD')
+    base_time = '2300'
   } else {
+    next_date = moment().format('YYYYMMDD')
     base_date = moment().subtract(1, 'day').format('YYYYMMDD')
     base_time = '2300'
   }
   console.log()
   console.log(`Search for my Local Time @[${moment().format('HH:mm')}] ♥`)
   console.log()
-  return [base_date, base_time]
+  return [base_date, base_time, next_date]
 }

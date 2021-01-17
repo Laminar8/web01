@@ -1,5 +1,6 @@
 header {
   text-align: right;
+  margin-bottom: 30px;
 }
 
 header .header {
@@ -20,6 +21,8 @@ header .header button {
   -webkit-backdrop-filter: blur(3px);
   border-radius: 10px;
   padding: 0 20px;
+  /* With hover event, No showing mouse pointer */
+  cursor: none;
 }
 
 header .header button .iconClass {

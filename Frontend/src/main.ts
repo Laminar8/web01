@@ -1,4 +1,4 @@
-import Svelte from "./components/index/index.svelte";
+import Svelte from "./components/index.svelte";
 
 new Svelte({
   target: document.body,

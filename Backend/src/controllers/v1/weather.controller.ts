@@ -5,9 +5,7 @@ import { Weather } from './weather/weather'
 export const get = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<express.Response<string> | undefined> => {
   try {
     const weather = await Weather()
-
-    // console.log(weather)
-    return res.send(weather)
+    return res.send({ weatherList: weather })
   } catch (e) {
     next(e)
   }

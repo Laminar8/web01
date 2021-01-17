@@ -25,6 +25,7 @@
     "typescript": "^3.9.3"
   },
   "dependencies": {
+    "moment": "^2.29.1",
     "sirv-cli": "^1.0.0"
   }
 }

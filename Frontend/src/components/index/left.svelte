@@ -1,9 +1,7 @@
 <script lang="typescript">
+  import Week from "./left/week.svelte";
 </script>
 
 <left class="item">
-    <div class="title">
-        <i class="fas fa-calendar-week" />
-        <p>This Week</p>
-    </div>
+  <Week />
 </left>

@@ -1,0 +1,49 @@
+left .weekContent {
+  margin: 0 0 15px 0;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+  border-radius: 5px;
+  height: 100px;
+}
+
+left .weekContent .weekTitle {
+  display: inline-flex;
+}
+
+left .weekContent .weekTitle .weekText {
+  font-size: 25px;
+  margin: 10px 0 0 20px;
+  font-family: "Jua";
+  color: #bdbdc4;
+}
+
+left .weekContent .weekTitle .weekButton {
+  display: inline-flex;
+  margin-left: 50px;
+}
+
+left .weekContent .weekTitle .weekButton button {
+  border: 0;
+  color: #bdbdc4;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  overflow: hidden;
+  display: inline-flex;
+  float: left;
+  margin: 5px;
+  /* With hover event, No showing mouse pointer */
+  cursor: none;
+}
+
+left .weekContent .weekTitle .weekButton button img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
