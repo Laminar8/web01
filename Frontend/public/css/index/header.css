@@ -1,10 +1,5 @@
 header {
   text-align: right;
-  margin-bottom: 30px;
-}
-
-header .header {
-  margin: 20px 25px 0 0;
 }
 
 header .header .headerIcon {
@@ -14,8 +9,8 @@ header .header .headerIcon {
 
 header .header button {
   border: 0;
-  color: #bdbdc4;
-  background: rgba(255, 255, 255, 0.15);
+  color: #1e1e22d7;
+  background: rgba(255, 196, 196, 0.6);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
@@ -23,6 +18,7 @@ header .header button {
   padding: 0 20px;
   /* With hover event, No showing mouse pointer */
   cursor: none;
+  font-weight: 700;
 }
 
 header .header button .iconClass {

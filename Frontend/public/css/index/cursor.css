@@ -1,6 +1,6 @@
 /* 기본 색상 변수에 담기 */
 html {
-  --color-texta: #1d1d1d;
+  --color-texta: #fc6b6bce;
   --color-textb: #c5dadf;
 }
 
@@ -12,8 +12,8 @@ body {
 
 /* 커스텀 커서 스타일 정의해주기 */
 .cursor {
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 50%;
   position: absolute;
   z-index: 1000;
@@ -28,7 +28,10 @@ body {
 }
 
 .cursor-grow {
-  transform: scale(2);
   background-color: var(--color-texta);
   opacity: 100%;
+}
+
+.box-grow {
+  transform: scale(1.05);
 }

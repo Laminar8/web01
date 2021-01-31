@@ -1,0 +1,52 @@
+column3 {
+  height: 650px;
+  font-family: "Jua";
+  color: #1e1e22d7;
+}
+
+column3 .box {
+  /* Default Box */
+  background: rgba(255, 196, 196, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+  border-radius: 15px;
+  height: 100%;
+
+  /* Animation Settings */
+  transition: all 1s ease;
+
+  /* Grid Settings */
+  display: grid;
+  grid-template-rows: 5fr 0.5fr 1.3fr 2fr;
+  grid-template-columns: 1fr 8fr 1fr;
+  grid-template-areas:
+    "image image image"
+    ". . ."
+    ". title ."
+    ". text .";
+}
+
+column3 .box .image {
+  grid-area: image;
+}
+
+column3 .box .image img {
+  padding: 11.2vh 7.5% 0 7.5%;
+  max-width: 85%;
+  max-height: 85%;
+}
+
+column3 .box .title {
+  grid-area: title;
+  text-align: center;
+  font-size: 4vh;
+  font-weight: 900;
+}
+
+column3 .box .text {
+  grid-area: text;
+  text-align: center;
+  font-size: 1.75vh;
+  font-weight: 600;
+}
