@@ -1,6 +1,8 @@
 <script lang="typescript">
-  import girl from "../../../public/images/people/undraw_Followers_re_6k3g.svg";
-
+  export let src: string;
+  export let title: string;
+  export let text1: string;
+  export let text2: string;
   // Find div.box
   let count = 0;
 
@@ -22,21 +24,19 @@
   }
 </script>
 
-<column3 class="item">
-  <div
-    class="box"
-    on:mouseenter={handleMouseEnter}
-    on:mouseleave={handleMouseLeave}
-  >
-    <div class="image">
-      <img src={girl} alt="" />
-    </div>
-    <div class="title">
-      <span>더하기, 또 다른 나</span>
-    </div>
-    <div class="text">
-      <span>어제와 나와 오늘의 나는 똑같지 않습니다.</span><br />
-      <span>다른 나의 모습을 기억하세요. </span>
-    </div>
+<div
+  class="box"
+  on:mouseenter={handleMouseEnter}
+  on:mouseleave={handleMouseLeave}
+>
+  <div class="image">
+    <img {src} alt="" />
   </div>
-</column3>
+  <div class="title">
+    <span>{title}</span>
+  </div>
+  <div class="text">
+    <span>{text1}</span><br />
+    <span>{text2}</span>
+  </div>
+</div>

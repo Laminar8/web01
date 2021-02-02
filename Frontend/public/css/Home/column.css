@@ -1,0 +1,35 @@
+column.column1 {
+  height: 650px;
+}
+
+column.column1 .box {
+  background: rgba(238, 138, 138, 0.85);
+}
+
+column.column2 {
+  height: 650px;
+  font-family: "Jua";
+  color: #1e1e22d7;
+}
+
+column.column3 {
+  height: 650px;
+  font-family: "Jua";
+  color: #1e1e22d7;
+}
+
+column.column3 .box .image img {
+  padding: 11.2vh 7.5% 0 7.5%;
+}
+
+column.column4 {
+  height: 650px;
+  font-family: "Jua";
+  color: #1e1e22d7;
+}
+
+column.column4 .box .image img {
+  padding: 6vh 13% 0 17%;
+  max-width: 70%;
+  max-height: 70%;
+}
