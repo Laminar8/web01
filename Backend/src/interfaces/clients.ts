@@ -27,7 +27,7 @@ export const connectionInfo: ConnectionInfo = {
 const uri = `mongodb+srv://${connectionInfo.db_user}:${connectionInfo.db_password}@cluster0.rubs0.mongodb.net?retryWrites=true&w=majority`
 
 // Client Connection
-export const client = new Mongodb.MongoClient(uri, { useNewUrlParser: true })
+export const client = new Mongodb.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 console.log()
 console.log(`DB connection is succesful ♥`)
 console.log()

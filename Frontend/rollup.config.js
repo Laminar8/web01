@@ -3,11 +3,10 @@ import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
-import sveltePreprocess from "svelte-preprocess";
 import typescript from "@rollup/plugin-typescript";
 import image from "@rollup/plugin-image";
 import css from "rollup-plugin-css-only";
-
+import sveltePreprocess from "svelte-preprocess";
 const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
@@ -45,7 +44,11 @@ export default {
   },
   plugins: [
     svelte({
-      preprocess: sveltePreprocess(),
+      preprocess: sveltePreprocess({
+        defaults: {
+          script: "typescript", // <-- now you can just write <script>let typingsAllowed: string;</script>
+        },
+      }),
       compilerOptions: {
         // enable run-time checks when not in production
         dev: !production,
@@ -85,5 +88,16 @@ export default {
   ],
   watch: {
     clearScreen: false,
+  },
+  onwarn: function (warning) {
+    // Skip certain warnings
+
+    // should intercept ... but doesn't in some rollup versions
+    if (warning.code === "THIS_IS_UNDEFINED") {
+      return;
+    }
+
+    // console.warn everything else
+    console.warn(warning.message);
   },
 };

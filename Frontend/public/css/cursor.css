@@ -4,12 +4,6 @@ html {
   --color-textb: #c5dadf;
 }
 
-/* 시스템 커서 안 보이게 숨기기 */
-
-body {
-  cursor: none;
-}
-
 /* 커스텀 커서 스타일 정의해주기 */
 .cursor {
   width: 2.5rem;
@@ -30,8 +24,4 @@ body {
 .cursor-grow {
   background-color: var(--color-texta);
   opacity: 100%;
-}
-
-.box-grow {
-  transform: scale(1.05);
 }

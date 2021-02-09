@@ -2,7 +2,6 @@
   import girl2 from "../../../public/images/people/undraw_Mobile_messages_re_yx8w.svg";
   import girl3 from "../../../public/images/people/undraw_Followers_re_6k3g.svg";
   import girl4 from "../../../public/images/people/undraw_home_screen_4n7s.svg";
-  import Box from "./objects/box.svelte";
 
   const columnContent = [
     {
@@ -27,15 +26,132 @@
       text2: "내일은 어떤 '나' 일까요?",
     },
   ];
+  // Find div.box
+  let count = 0;
+
+  // Mouse Event
+  function handleMouseEnter(event) {
+    for (let step = 0; step < event.path.length; step++) {
+      // Hover Effect
+      if (event.path[count].classList[0].indexOf("box") == -1) {
+        console.log(new Array(event.path[count].classList[0]), count);
+        count += 1;
+      } else {
+        console.log("hi");
+        console.log(event.path[count].classList);
+        event.path[count].classList.add("box-grow");
+        event.path[count].style.background = "rgba(240, 222, 255, 0.6)";
+        break;
+      }
+    }
+  }
+
+  function handleMouseLeave(event) {
+    // Hover Effect
+    event.path[count].classList.remove("box-grow");
+    event.path[count].style.background = "rgba(255, 196, 196, 0.6)";
+    count = 0;
+  }
 </script>
 
 {#each columnContent as innerArr}
   <column class={innerArr.columnName}>
-    <Box
-      src={innerArr.src}
-      title={innerArr.title}
-      text1={innerArr.text1}
-      text2={innerArr.text2}
-    />
+    <div
+      class="box"
+      on:mouseenter={handleMouseEnter}
+      on:mouseleave={handleMouseLeave}
+    >
+      <div class="image">
+        <img src={innerArr.src} alt="" />
+      </div>
+      <div class="title">
+        <span>{innerArr.title}</span>
+      </div>
+      <div class="text">
+        <span>{innerArr.text1}</span><br />
+        <span>{innerArr.text2}</span>
+      </div>
+    </div>
   </column>
 {/each}
+
+<style type="text/scss">
+  .box {
+    /* Default Box */
+    background: rgba(255, 196, 196, 0.6);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    -webkit-backdrop-filter: blur(2.5px);
+    backdrop-filter: blur(2.5px);
+    border-radius: 15px;
+    height: 100%;
+
+    /* Animation Settings */
+    transition: all 1s ease;
+
+    /* Grid Settings */
+    display: grid;
+    grid-template-rows: 5fr 0.5fr 1.3fr 2fr;
+    grid-template-columns: 1fr 8fr 1fr;
+    grid-template-areas:
+      "image image image"
+      ". . ."
+      ". title ."
+      ". text .";
+    .image {
+      grid-area: image;
+      img {
+        padding: 8vh 7.5% 0 7.5%;
+        max-width: 85%;
+        max-height: 85%;
+      }
+    }
+    .title {
+      grid-area: title;
+      text-align: center;
+      font-size: 4vh;
+      font-weight: 900;
+    }
+    .text {
+      grid-area: text;
+      text-align: center;
+      font-size: 1.75vh;
+      font-weight: 600;
+    }
+  }
+  column {
+    height: 650px;
+    font-family: "Jua";
+    color: #1e1e22d7;
+  }
+
+  .column1.item {
+    height: 650px;
+    grid-area: column1;
+    .box {
+      background: rgba(238, 138, 138, 0.85);
+    }
+  }
+
+  .column2.item {
+    grid-area: column2;
+  }
+
+  .column3.item {
+    grid-area: column3;
+    .box .image img {
+      padding: 11.2vh 7.5% 0 7.5%;
+    }
+  }
+
+  .column4.item {
+    grid-area: column4;
+    .box .image img {
+      padding: 6vh 13% 0 17%;
+      max-width: 70%;
+      max-height: 70%;
+    }
+  }
+  .box-grow {
+    transform: scale(1.05);
+  }
+</style>

@@ -5,10 +5,16 @@ import logger from 'morgan'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
-import type { MongoError } from 'mongodb'
+import passport from 'passport'
+
 // Router Import
 import { router as indexRouter } from './routes/index'
 import v1Route from './routes/v1'
+import { configureSession } from './configs/session'
+import { configurePassport } from './configs/passport'
+
+// Import Interface
+import type { MongoError } from 'mongodb'
 
 // MongoDB Connection
 import { client, connectionInfo } from './interfaces/clients'
@@ -17,51 +23,55 @@ import { client, connectionInfo } from './interfaces/clients'
 dotenv.config()
 const app = express()
 
-// App use moudle
+// App uses moudle
 app.use(logger('dev'))
 app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(express.urlencoded({ extended: false }))
 app.use(cors())
-
-// App use Router
-app.use('/', indexRouter)
-app.use('/v1', v1Route)
 
 // App connection
 client.connect((err: MongoError) => {
   if (err) {
     console.error('Failed to connect to mongodb ', err)
   }
-  const collection = client.db(connectionInfo.db_name).collection('user01')
-  app.locals.collection = collection
-})
+  const db = client.db(connectionInfo.db_name)
+  app.locals.db = db
 
-// catch 404 and forward to error handler
-app.use(function (req: express.Request, res: express.Response, next: express.NextFunction) {
-  next(createError(404))
-})
+  // Session Config
+  configureSession(app)
+  configurePassport(app, db)(passport)
 
-// error handler
-app.use(function (err: HttpError, req: express.Request, res: express.Response) {
-  let apiError = err
+  // App uses Router
+  app.use('/', indexRouter)
+  app.use('/v1', v1Route)
 
-  if (!err.status) {
-    apiError = createError(err)
-  }
+  // catch 404 and forward to error handler
+  app.use(function (req: express.Request, res: express.Response, next: express.NextFunction) {
+    next(createError(404))
+  })
 
-  // set locals, only providing error in development
-  res.locals.message = apiError.message
-  res.locals.error = process.env.NODE_ENV === 'development' ? apiError : {}
+  // error handler
+  app.use(function (err: HttpError, req: express.Request, res: express.Response) {
+    let apiError = err
 
-  // render the error page
-  return res.status(apiError.status).json({ message: apiError.message })
-})
+    if (!err.status) {
+      apiError = createError(err)
+    }
 
-// Open Port from .env
-const appPort: string | number = process.env.PORT || 4000
-app.listen(appPort, () => {
-  console.log(``)
-  console.log(`HTTP Server is running at http://localhost:${appPort} ♥`)
-  console.log(``)
+    // set locals, only providing error in development
+    res.locals.message = apiError.message
+    res.locals.error = process.env.NODE_ENV === 'development' ? apiError : {}
+
+    // render the error page
+    return res.status(apiError.status).json({ message: apiError.message })
+  })
+
+  // Open Port from .env
+  const appPort: string | number = process.env.PORT || 4000
+  app.listen(appPort, () => {
+    console.log(``)
+    console.log(`HTTP Server is running at http://localhost:${appPort} ♥`)
+    console.log(``)
+  })
 })

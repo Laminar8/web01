@@ -4,6 +4,6 @@
 
 <column class="column1 item">
   <div class="box">
-    <a href="/login" use:link> login </a>
+    <a href="/signin" use:link> login </a>
   </div>
 </column>

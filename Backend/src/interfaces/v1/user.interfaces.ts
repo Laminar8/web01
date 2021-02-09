@@ -1,4 +1,4 @@
 export interface Users {
-  name: string
-  town: string
+  username: string
+  password: string
 }
