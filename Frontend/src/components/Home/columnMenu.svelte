@@ -34,11 +34,8 @@
     for (let step = 0; step < event.path.length; step++) {
       // Hover Effect
       if (event.path[count].classList[0].indexOf("box") == -1) {
-        console.log(new Array(event.path[count].classList[0]), count);
         count += 1;
       } else {
-        console.log("hi");
-        console.log(event.path[count].classList);
         event.path[count].classList.add("box-grow");
         event.path[count].style.background = "rgba(240, 222, 255, 0.6)";
         break;
@@ -122,14 +119,6 @@
     height: 650px;
     font-family: "Jua";
     color: #1e1e22d7;
-  }
-
-  .column1.item {
-    height: 650px;
-    grid-area: column1;
-    .box {
-      background: rgba(238, 138, 138, 0.85);
-    }
   }
 
   .column2.item {

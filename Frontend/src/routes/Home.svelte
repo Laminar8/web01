@@ -1,6 +1,6 @@
 <script lang="typescript">
-  import Column1 from "../components/Home/column1.svelte";
-  import Column from "../components/Home/column.svelte";
+  import Column1 from "../components/Home/columnUser.svelte";
+  import Column from "../components/Home/columnMenu.svelte";
 </script>
 
 <div class="container">
