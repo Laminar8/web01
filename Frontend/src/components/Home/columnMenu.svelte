@@ -37,7 +37,7 @@
         count += 1;
       } else {
         event.path[count].classList.add("box-grow");
-        event.path[count].style.background = "rgba(240, 222, 255, 0.6)";
+        event.path[count].style.backgroundColor = "rgba(240, 222, 255, 0.6)";
         break;
       }
     }
@@ -46,7 +46,7 @@
   function handleMouseLeave(event) {
     // Hover Effect
     event.path[count].classList.remove("box-grow");
-    event.path[count].style.background = "rgba(255, 196, 196, 0.6)";
+    event.path[count].style.backgroundColor = "rgba(255, 196, 196, 0.6)";
     count = 0;
   }
 </script>
@@ -73,9 +73,15 @@
 {/each}
 
 <style type="text/scss">
+  column {
+    height: 70vh;
+    width: 100%;
+    font-family: "Jua";
+    color: #1e1e22d7;
+  }
   .box {
     /* Default Box */
-    background: rgba(255, 196, 196, 0.6);
+    background-color: rgba(255, 196, 196, 0.6);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     -webkit-backdrop-filter: blur(2.5px);
     backdrop-filter: blur(2.5px);
@@ -87,7 +93,7 @@
 
     /* Grid Settings */
     display: grid;
-    grid-template-rows: 5fr 0.5fr 1.3fr 2fr;
+    grid-template-rows: 4fr 0.2fr 1.3fr 2fr;
     grid-template-columns: 1fr 8fr 1fr;
     grid-template-areas:
       "image image image"
@@ -97,9 +103,9 @@
     .image {
       grid-area: image;
       img {
-        padding: 8vh 7.5% 0 7.5%;
-        max-width: 85%;
-        max-height: 85%;
+        padding: 10.5vh 20% 0 20%;
+        max-width: 60%;
+        max-height: 60%;
       }
     }
     .title {
@@ -115,11 +121,6 @@
       font-weight: 600;
     }
   }
-  column {
-    height: 650px;
-    font-family: "Jua";
-    color: #1e1e22d7;
-  }
 
   .column2.item {
     grid-area: column2;
@@ -128,16 +129,16 @@
   .column3.item {
     grid-area: column3;
     .box .image img {
-      padding: 11.2vh 7.5% 0 7.5%;
+      padding: 12.7vh 20% 0 20%;
     }
   }
 
   .column4.item {
     grid-area: column4;
     .box .image img {
-      padding: 6vh 13% 0 17%;
-      max-width: 70%;
-      max-height: 70%;
+      padding: 7.5vh 13% 0 27%;
+      max-width: 60%;
+      max-height: 60%;
     }
   }
   .box-grow {

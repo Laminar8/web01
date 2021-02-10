@@ -2,26 +2,18 @@
   import Signin from "../../components/Sign/signin.svelte";
 </script>
 
-<div id="oneContainer">
+<div class="container">
   <Signin />
 </div>
 
 <style type="text/scss">
-  #oneContainer {
+  .container {
     display: grid;
-    /* gap: 2vh 3vw; */
-    /* padding: 0 5vw 0 5vw; */
     grid-template-rows: 1fr 8fr 1fr;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 4fr 1fr;
     grid-template-areas:
       ". . ."
-      ". centerContainer ."
+      ". signin-center ."
       ". . .";
-  }
-
-  centerContainer {
-    grid-area: centerContainer;
-    height: 80vh;
-    /* background-color: brown; */
   }
 </style>

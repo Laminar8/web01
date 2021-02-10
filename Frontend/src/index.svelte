@@ -11,11 +11,6 @@
 
 <style type="text/scss">
   body {
-    width: 100vw;
-    height: 100vh;
-    max-width: 100vw;
-    max-height: 100vh;
-
     /* 시스템 커서 안 보이게 숨기기 */
     cursor: none;
 

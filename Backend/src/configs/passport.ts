@@ -19,7 +19,7 @@ export const configurePassport = (app: Express, db: Db) => (passport: passport.P
    * Local Strategy
    */
   passport.use(
-    new LocalStrategy(function (username, password, done) {
+    new LocalStrategy({ usernameField: 'email' }, function (username, password, done) {
       collection.findOne({ username: username }, function (err, user) {
         if (err) {
           return done(err)

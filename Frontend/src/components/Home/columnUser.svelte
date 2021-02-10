@@ -1,5 +1,14 @@
 <script lang="typescript">
   import { link } from "svelte-spa-router";
+  import { onMount } from "svelte";
+  // Feching
+  const baseUrl = "http://localhost:4000/v1/week/";
+  onMount(async () => {
+    const res = await fetch(baseUrl + String(thisWeekNumber));
+    posts = await res.json();
+    weekArr = posts.weekArr;
+    changeDayArr = posts.changeDayArr;
+  });
 </script>
 
 <column class="column1 item">
@@ -9,9 +18,15 @@
 </column>
 
 <style lang="scss">
+  column {
+    height: 70vh;
+    width: 100%;
+    font-family: "Jua";
+    color: #1e1e22d7;
+  }
   .box {
     /* Default Box */
-    background: rgba(255, 196, 196, 0.6);
+    background-color: rgba(255, 196, 196, 0.6);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     -webkit-backdrop-filter: blur(2.5px);
     backdrop-filter: blur(2.5px);
@@ -31,17 +46,10 @@
       ". title ."
       ". text .";
   }
-  column {
-    height: 650px;
-    font-family: "Jua";
-    color: #1e1e22d7;
-  }
-
   .column1.item {
-    height: 650px;
     grid-area: column1;
     .box {
-      background: rgba(238, 138, 138, 0.85);
+      background-color: rgba(238, 138, 138, 0.85);
     }
   }
 </style>
