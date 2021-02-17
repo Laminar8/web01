@@ -12,10 +12,11 @@ export const get = (req: express.Request, res: express.Response, next: express.N
   try {
     const user = req.session.passport
     if (user == undefined) {
-      console.log('hi)')
+      return res.send({ user: false })
+    } else {
+      console.log(req.cookies)
+      return res.send(user)
     }
-    console.log(user)
-    return res.send(`${user}`)
   } catch (e) {
     next(e)
   }

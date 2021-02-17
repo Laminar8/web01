@@ -1,5 +1,6 @@
 <script lang="typescript">
   import { link } from "svelte-spa-router";
+  let name: string;
   let email: string;
   let password: string;
 
@@ -15,18 +16,18 @@
 <container>
   <div class="right-header">
     <div class="signin-top-wrap">
-      <p>들어가기</p>
+      <p>함께하기</p>
     </div>
   </div>
   <div class="left-box">
     <div class="signup-content-container">
       <div class="signup-content-header">
-        <p>우리, 처음인가요?</p>
+        <p>낯설지 않은 우리</p>
       </div>
       <div class="signup-content-body">
-        <p>당신과 오늘부터 함께하고 싶어요</p>
-        <p>오늘의 기억은 나에게 맡겨요</p>
-        <a href="/signup" use:link> 회원가입 </a>
+        <p>함께했던 지난 추억이 생각나요</p>
+        <p>같이 기억을 살려볼까요?</p>
+        <a href="/signin" use:link> 로그인 </a>
       </div>
     </div>
   </div>
@@ -38,6 +39,15 @@
         method="POST"
         on:submit={handleSubmit}
       >
+        <div class="signin-input-wrap input-id">
+          <i class="fas fa-user" />
+          <input
+            placeholder="사용자 이름"
+            type="text"
+            name="username"
+            bind:value={name}
+          />
+        </div>
         <div class="signin-input-wrap input-id">
           <i class="far fa-envelope" />
           <input
@@ -57,12 +67,9 @@
           />
         </div>
         <div class="signin-btn-wrap">
-          <button class="signin-btn">로그인</button>
+          <button class="signin-btn">회원가입</button>
         </div>
       </form>
-      <div class="findpassword-btn-wrap">
-        <button class="findpassword-btn">비밀번호를 잊으셨나요?</button>
-      </div>
     </div>
   </div>
 </container>
@@ -72,7 +79,7 @@
     /* Default Font & Grid */
     font-family: "Jua";
     color: #1e1e22d7;
-    grid-area: signin-center;
+    grid-area: signup-center;
     height: 70vh;
     width: 60vw;
     margin: {
@@ -150,7 +157,7 @@
     border-radius: 0 0 15px 0;
     .signin-input-container {
       padding: {
-        top: 15vh;
+        top: 10vh;
         left: 15%;
       }
       .signin-input-wrap {
@@ -215,26 +222,6 @@
           background-color: rgb(161, 131, 185);
           cursor: none;
           color: white;
-          font-size: 0.9vw;
-          outline: none;
-        }
-      }
-      .findpassword-btn-wrap {
-        margin: {
-          top: 2vh;
-          left: 29.2%;
-        }
-        width: 80%;
-        display: flex;
-        flex-direction: column;
-        button {
-          border: 0;
-          height: 5vh;
-          width: 8vw;
-          padding-top: 1vh;
-          background-color: transparent;
-          cursor: none;
-          color: rgb(161, 131, 185);
           font-size: 0.9vw;
           outline: none;
         }

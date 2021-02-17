@@ -1,19 +1,28 @@
 <script lang="typescript">
   import { link } from "svelte-spa-router";
   import { onMount } from "svelte";
+
+  let posts = { user: false };
   // Feching
-  const baseUrl = "http://localhost:4000/v1/week/";
+  const baseUrl = "http://localhost:4000/v1/users";
   onMount(async () => {
-    const res = await fetch(baseUrl + String(thisWeekNumber));
+    const res = await fetch(baseUrl, { credentials: "include" });
     posts = await res.json();
-    weekArr = posts.weekArr;
-    changeDayArr = posts.changeDayArr;
+    if (posts.user == false) {
+      console.log(posts);
+    } else {
+      console.log(posts);
+    }
   });
 </script>
 
 <column class="column1 item">
   <div class="box">
-    <a href="/signin" use:link> login </a>
+    {#if posts.user == false}
+      <a href="/signin" use:link> login </a>
+    {:else}
+      <a href="http://localhost:4000/v1/signout"> logout </a>
+    {/if}
   </div>
 </column>
 
