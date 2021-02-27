@@ -128,10 +128,10 @@
         -moz-border-radius: 45px;
         border-radius: 45px;
         border: 0.15vw solid rgba(229, 224, 231, 0.856);
-        // background-color: rgba(229, 224, 231, 0.856);
         width: 10vw;
         height: 4vh;
         appearance: button;
+        color: rgba(229, 224, 231, 0.856);
       }
 
       a:visited {

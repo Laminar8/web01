@@ -5,8 +5,8 @@
   let password: string;
 
   function handleSubmit(event) {
-    console.log(email, password);
-    if (!email || !password) {
+    console.log(name, email, password);
+    if (!name || !email || !password) {
       event.preventDefault();
       alert("이메일 또는 비밀번호를 입력해주세요.");
     }
@@ -34,7 +34,7 @@
   <div class="right-box">
     <div class="signin-input-container">
       <form
-        action="http://localhost:4000/v1/signin"
+        action="http://localhost:4000/v1/signup"
         name="loginForm"
         method="POST"
         on:submit={handleSubmit}

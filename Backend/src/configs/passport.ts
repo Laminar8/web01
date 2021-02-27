@@ -19,13 +19,13 @@ export const configurePassport = (app: Express, db: Db) => (passport: passport.P
    * Local Strategy
    */
   passport.use(
-    new LocalStrategy({ usernameField: 'email' }, function (username, password, done) {
-      collection.findOne({ username: username }, function (err, user) {
+    new LocalStrategy({ usernameField: 'email' }, function (email, password, done) {
+      collection.findOne({ email: email }, function (err, user) {
         if (err) {
           return done(err)
         }
         if (!user) {
-          console.log('Incorrect username.')
+          console.log('Incorrect email.')
           return done(null, false)
         }
         if (user.password != password) {
