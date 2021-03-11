@@ -4,13 +4,14 @@ import Home from "./routes/Home.svelte";
 import Error from "./routes/Error.svelte";
 import Signin from "./routes/Sign/Signin.svelte";
 import Signup from "./routes/Sign/Signup.svelte";
-import Chat from "./routes/Chat/Chat.svelte";
 
 const routes = {
   "/": Home,
   "/signin": Signin,
   "/signup": Signup,
-  "/chat/:date": Chat,
+  "/chat/:day": wrap({
+    asyncComponent: () => import("./routes/Chat/Chat.svelte"),
+  }),
 
   // Catch-all
   // This is optional, but if present it must be the last

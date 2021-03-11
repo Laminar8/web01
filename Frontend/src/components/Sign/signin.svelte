@@ -111,7 +111,7 @@
         letter-spacing: 0.2vw;
       }
       .signup-content-body {
-        margin-top: 3vh;
+        margin-top: 2vh;
         font: {
           size: 1vw;
         }

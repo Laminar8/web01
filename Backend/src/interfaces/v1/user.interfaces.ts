@@ -8,4 +8,5 @@ export interface Chat {
   userId: string
   author: string
   comments: { text: unknown }[]
+  date: string
 }

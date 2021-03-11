@@ -38,9 +38,9 @@ export default {
   input: "src/main.ts",
   output: {
     sourcemap: true,
-    format: "iife",
-    name: "app",
-    file: "public/build/bundle.js",
+    format: "esm",
+    dir: "public/build",
+    chunkFileNames: "[name].js",
   },
   plugins: [
     svelte({
@@ -86,6 +86,7 @@ export default {
     // instead of npm run dev), minify
     production && terser(),
   ],
+  preserveEntrySignatures: false,
   watch: {
     clearScreen: false,
   },

@@ -9,12 +9,11 @@
 <style type="text/scss">
   .container {
     display: grid;
-    grid-template-rows: 0.5fr 10fr 0.5fr;
-    grid-template-columns: 0.25fr 2fr 6fr 2fr 0.25fr;
+    grid-template-rows: 1fr 8fr 1fr;
+    grid-template-columns: 1fr 4fr 1fr;
     grid-template-areas:
-      ". . . . ."
-      ". left mid right ."
-      ". . . . . ";
-    height: 100%;
+      ". . ."
+      ". chat-center ."
+      ". . .";
   }
 </style>
