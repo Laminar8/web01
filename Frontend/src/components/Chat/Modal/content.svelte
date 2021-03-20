@@ -6,6 +6,10 @@
   const { open } = getContext("simple-modal");
 
   const onOkay = (text) => {
+    console.log(text);
+    if (text.slice(0, 1) !== "#") {
+      text = "#" + text;
+    }
     $tagsArray = [...$tagsArray, { tag: text }];
   };
 

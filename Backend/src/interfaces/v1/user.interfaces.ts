@@ -9,4 +9,5 @@ export interface Chat {
   author: string
   comments: { text: unknown }[]
   date: string
+  tags: { tag: unknown }[]
 }

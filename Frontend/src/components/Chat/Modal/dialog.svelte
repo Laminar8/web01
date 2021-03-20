@@ -1,5 +1,13 @@
 <script>
   import { getContext } from "svelte";
+  import {
+    tagsArray,
+    comments,
+    userId,
+    author,
+    thisDay,
+    backendServerUrl,
+  } from "../../../stores";
   export let hasForm = false;
   export let onCancel = () => {};
   export let onOkay = () => {};
@@ -9,6 +17,25 @@
   let value;
   let onChange = () => {};
 
+  async function postChat() {
+    const postBody = {
+      userId: $userId,
+      author: $author,
+      comments: $comments,
+      date: $thisDay,
+      tags: $tagsArray,
+    };
+    console.log(postBody);
+    const res = await fetch(`${$backendServerUrl}/chat`, {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(postBody),
+    });
+  }
+
   function _onCancel() {
     onCancel();
     close();
@@ -16,7 +43,8 @@
 
   function _onOkay() {
     onOkay(value);
-    close();
+    postChat();
+    value = "";
   }
 
   $: onChange(value);

@@ -1,12 +1,19 @@
 <script lang="typescript">
-  import { link } from "svelte-spa-router";
   import { beforeUpdate, afterUpdate, onMount } from "svelte";
 
   //
   // Modal
   //
   import TagModalApp from "./Modal/app.svelte";
-  import { tagsArray } from "../../stores";
+  import {
+    tagsArray,
+    comments,
+    userId,
+    author,
+    thisDay,
+    backendServerUrl,
+    frontendServerUrl,
+  } from "../../stores";
 
   //
   // Moment Settings
@@ -16,37 +23,37 @@
   moment.locale("ko");
 
   // Common Variables
-  const backendServerUrl = "http://localhost:4000/v1";
-  const frontendServerUrl = "http://localhost:5000/#";
   const menu = [
     {
       class: "chatting-btn-wrap",
       i: "fas fa-comment-dots",
-      a: "/chat",
+      a: `${$backendServerUrl}/chat/change/?thisDay=${moment().format(
+        "YYYYMMDD"
+      )}`,
       text: "채팅",
     },
     {
       class: "schedule-btn-wrap",
       i: "fas fa-calendar",
-      a: "/chat",
+      a: "/#/chat",
       text: "달력",
     },
     {
       class: "schedule-btn-wrap",
       i: "fas fa-chart-area",
-      a: "/chat",
+      a: "/#/chat",
       text: "기념일",
     },
     {
       class: "schedule-btn-wrap",
       i: "fas fa-palette",
-      a: "/chat",
+      a: "/#/chat",
       text: "통계",
     },
     {
       class: "schedule-btn-wrap",
       i: "fas fa-cog",
-      a: "/chat",
+      a: "/#/chat",
       text: "설정",
     },
   ];
@@ -56,48 +63,69 @@
   //
 
   let posts = { user: { _id: false } };
-  let userId: string | boolean;
-  let comments = [];
-
+  let chatFull = { comments: [], tags: [] };
+  let tagsList = [];
   // Feching
   onMount(async () => {
-    const getUserId = await fetch(`${backendServerUrl}/users`, {
+    const getUserId = await fetch(`${$backendServerUrl}/users`, {
       credentials: "include",
     });
     posts = await getUserId.json();
     if (posts.user._id == false) {
-      window.location.href = `${frontendServerUrl}/signin`;
+      window.location.href = `${$frontendServerUrl}/signin`;
     } else {
-      userId = posts.user._id;
+      userId.set(posts.user._id);
     }
     const getChat = await fetch(
-      `${backendServerUrl}/chat/?userId=${userId}&author=user&date=${thisDay}`
+      `${$backendServerUrl}/chat/?userId=${$userId}&author=user&date=${$thisDay}`
     );
     try {
-      comments = await getChat.json();
+      chatFull = await getChat.json();
+      console.log(chatFull);
+      comments.set(chatFull.comments);
+      tagsList = chatFull.tags;
+      if (tagsList.length > 0) {
+        tagsArray.set(tagsList);
+        console.log($tagsArray);
+      }
     } catch (e) {
       console.log("Comments is undefined!");
-      comments = [];
+      comments.set([]);
     }
   });
 
+  function MouseLeaveMenu(event) {
+    event.target.lastChild.style.display = "none";
+  }
+
+  function MouseOnMenu(event) {
+    event.target.lastChild.style.display = "inline";
+  }
+
+  function MouseClickMenu(event) {
+    if (event.path[0].tagName == "I") {
+      window.location.href = event.path[1].lastChild.href;
+    } else {
+      window.location.href = event.path[0].lastChild.href;
+    }
+  }
   //
   // Right Box
   //
-  const thisDay = window.location.href.split("/")[5];
-  if (!moment(thisDay, "YYYYMMDD").isValid()) {
-    window.location.href = `${frontendServerUrl}/chat/${moment().format(
+  $thisDay = window.location.href.split("/")[5];
+  if (!moment($thisDay, "YYYYMMDD").isValid()) {
+    window.location.href = `${$frontendServerUrl}/chat/${moment().format(
       "YYYYMMDD"
     )}`;
   }
-  const today = moment(thisDay).format("YYYY년 MM월");
-  const todayFull = moment(thisDay).format("YYYY년 MM월 DD일");
+  const today = moment($thisDay).format("YYYY년 MM월");
+  const todayFull = moment($thisDay).format("YYYY년 MM월 DD일 dddd");
   const dayArray = [];
   for (let i = -3; i < 2; i++) {
     dayArray.push([
-      moment(thisDay).add(i, "days").format("YYYYMMDD"),
-      moment(thisDay).add(i, "days").format("DD"),
-      moment(thisDay).add(i, "days").format("ddd"),
+      moment($thisDay).add(i, "days").format("YYYYMMDD"),
+      moment($thisDay).add(i, "days").format("MM월 DD일 dddd"),
+      moment($thisDay).add(i, "days").format("ddd"),
     ]);
   }
 
@@ -107,13 +135,14 @@
 
   async function postChat() {
     const postBody = {
-      userId: userId,
-      author: "user",
-      comments: comments,
-      date: thisDay,
+      userId: $userId,
+      author: $author,
+      comments: $comments,
+      date: $thisDay,
+      tags: $tagsArray,
     };
     console.log(postBody);
-    const res = await fetch(`${backendServerUrl}/chat`, {
+    const res = await fetch(`${$backendServerUrl}/chat`, {
       method: "post",
       headers: {
         Accept: "application/json",
@@ -140,7 +169,7 @@
       const text = event.target.value;
       if (!text) return;
 
-      comments = comments.concat({
+      $comments = $comments.concat({
         text,
       });
       postChat();
@@ -167,15 +196,24 @@
   </div>
   <div class="menu-wrap">
     {#each menu as chatObject}
-      <div class={chatObject.class}>
+      <div
+        class={chatObject.class}
+        on:mouseenter={MouseOnMenu}
+        on:mouseleave={MouseLeaveMenu}
+        on:mousedown={MouseClickMenu}
+      >
         <i class={chatObject.i} />
-        <a href={chatObject.a} use:link>{chatObject.text}</a>
+        <a href={chatObject.a}>{chatObject.text}</a>
       </div>
     {/each}
     {#if posts.user._id != false}
-      <div>
+      <div
+        on:mouseenter={MouseOnMenu}
+        on:mouseleave={MouseLeaveMenu}
+        on:mousedown={MouseClickMenu}
+      >
         <i class="fas fa-sign-out-alt" />
-        <a href="{backendServerUrl}/signout"> 로그아웃 </a>
+        <a href="{$backendServerUrl}/signout"> 로그아웃 </a>
       </div>
     {/if}
   </div>
@@ -186,7 +224,7 @@
     <div class="today">{todayFull}</div>
     <div class="chat">
       <div class="scrollable" bind:this={div}>
-        {#each comments as comment}
+        {#each $comments as comment}
           <article>
             <span>{comment.text}</span>
           </article>
@@ -217,7 +255,7 @@
     }
 
     /* Default Box */
-    background-color: rgba(238, 138, 138, 0.85);
+    background-color: rgba(238, 138, 138, 1);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     -webkit-backdrop-filter: blur(2.5px);
     backdrop-filter: blur(2.5px);
@@ -240,7 +278,7 @@
     grid-area: header;
     /* Default Box */
     background-color: rgba(255, 255, 255, 0.8);
-    // border-bottom: 0.05vh solid rgba(255, 255, 255, 0.7);
+    border-top-right-radius: 15px;
 
     /* Grid Settings */
     display: grid;
@@ -257,6 +295,7 @@
         word-break: break-all;
         font-size: 0.7vw;
         padding: 0.5vh 0.7vw;
+        margin-right: 0.5vw;
       }
     }
     .header-button-wrap {
@@ -289,18 +328,20 @@
     }
     i {
       height: 5.2vh;
+      width: 27px;
       padding-top: 2.1vh;
     }
     a {
       color: rgba(229, 224, 231, 0.85);
+      background-color: rgb(238, 138, 138);
       height: 5.2vh;
       width: 8vw;
-      padding-top: 1.8vh;
-      margin-left: 1.5vw;
+      padding: 1.8vh 0 0 1.5vw;
+      margin-left: 0.81vw;
       appearance: button;
       cursor: none;
       position: absolute;
-      // display: none;
+      display: none;
     }
     a:visited {
       color: rgba(229, 224, 231, 0.85);
@@ -340,6 +381,8 @@
 
     /* Default Box */
     background-color: rgba(255, 255, 255, 0.8);
+    border-bottom-right-radius: 15px;
+
     .today {
       grid-area: today;
       margin-top: 2vh;
