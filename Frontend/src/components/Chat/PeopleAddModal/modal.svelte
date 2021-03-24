@@ -219,7 +219,7 @@
 
   .window {
     position: relative;
-    width: 25vw;
+    width: 30vw;
     max-width: 100%;
     max-height: 100%;
     margin: 2rem auto;
@@ -287,7 +287,7 @@
   }
 
   .close:hover {
-    background: black;
+    background: rgb(161, 131, 185);
   }
 
   .close:hover:before,

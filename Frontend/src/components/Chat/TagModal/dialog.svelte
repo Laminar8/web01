@@ -50,7 +50,7 @@
   $: onChange(value);
 </script>
 
-<button class="close" on:click={_onCancel}> Close </button>
+<button class="close" on:click={_onCancel}><i class="fas fa-times" /> </button>
 
 {#if hasForm}
   <div class="input-wrap">
@@ -90,9 +90,20 @@
 
   .close {
     position: absolute;
-    top: -2rem;
+    // top: -2rem;
     right: 0;
-    background: black;
+    margin-right: 1vw;
+    background: transparent;
+    cursor: none;
+    color: rgb(161, 131, 185);
+    border: none;
+    font-size: 1vw;
+  }
+
+  .close:before,
+  .close:after {
+    cursor: none;
+    color: rgb(161, 131, 185);
   }
 
   .input-wrap {

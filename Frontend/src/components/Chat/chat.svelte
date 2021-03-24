@@ -4,7 +4,8 @@
   //
   // Modal
   //
-  import TagModalApp from "./Modal/app.svelte";
+  import TagModalApp from "./TagModal/app.svelte";
+  import PeopleModalApp from "./PeopleModal/app.svelte";
   import {
     tagsArray,
     comments,
@@ -188,7 +189,7 @@
     <div class="header-button-wrap">
       <!-- <i class="fas fa-plus" /> -->
       <TagModalApp />
-      <i class="fas fa-search" />
+      <PeopleModalApp />
       <i class="fas fa-bell" />
       <i class="fas fa-heart" />
       <i class="fas fa-bars" />

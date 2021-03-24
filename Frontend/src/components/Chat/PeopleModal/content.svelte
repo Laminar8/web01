@@ -5,7 +5,7 @@
 
   const { open } = getContext("simple-modal");
 
-  const onOkay = (text) => {
+  const onOkay = (text: string) => {
     console.log(text);
     if (text.slice(0, 1) !== "#") {
       text = "#" + text;
@@ -22,7 +22,7 @@
         onOkay,
       },
       {
-        closeButton: true,
+        closeButton: false,
         closeOnEsc: true,
         closeOnOuterClick: true,
       }
@@ -30,7 +30,7 @@
   };
 </script>
 
-<i class="fas fa-plus" on:click={showDialog} />
+<i class="fas fa-search" on:click={showDialog} />
 
 <style lang="scss">
   i {
