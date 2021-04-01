@@ -29,10 +29,12 @@
       left: 5vw;
     }
     /* Default Box */
-    background-color: rgba(238, 138, 138, 0.85);
+    background: rgba(255, 255, 255, 0.3);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    -webkit-backdrop-filter: blur(2.5px);
-    backdrop-filter: blur(2.5px);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 15px;
   }
 </style>

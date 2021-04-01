@@ -8,12 +8,25 @@
 
 <style type="text/scss">
   .container {
+    height: 100%;
     display: grid;
-    grid-template-rows: 1fr 8fr 1fr;
-    grid-template-columns: 1fr 4fr 1fr;
-    grid-template-areas:
-      ". . ."
-      ". chat-center ."
-      ". . .";
+    grid-template-rows: repeat(15, 1fr);
+    grid-template-columns: repeat(15, 1fr);
+    column-gap: 5px;
+    grid-template-areas: ". . . . . . . . . . . . . . ." //1
+      ". . . . . . . . . . . . . . ." //2
+      ". . quick . . . . chat chat chat chat tagAdd tagAdd . ." //3
+      ". . quick . . . . chat chat chat chat tagLis tagLis . ." //4
+      ". . quick . . . . chat chat chat chat tagLis tagLis . ." //5
+      ". . quick . . . . chat chat chat chat tagLis tagLis  . ." //6
+      ". . quick . . . . chat chat chat chat tagLis tagLis . ." //7
+      ". . quick . . . . chat chat chat chat pplAdd pplAdd . ." //8
+      ". . quick . . . . chat chat chat chat pplLis pplLis . ." //9
+      ". . quick . . . . chat chat chat chat pplLis pplLis . ." //10
+      ". . quick . . . . chat chat chat chat pplLis pplLis . ." //11
+      ". . quick . . . . chat chat chat chat pplLis pplLis . ." //12
+      ". . quick . . . . chat chat chat chat pplLis pplLis . ." //13
+      ". . . . . . . . . . . . . . ." //14
+      ". . . . . . . . . . . . . . ."; //15
   }
 </style>

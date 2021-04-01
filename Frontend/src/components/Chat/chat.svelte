@@ -4,7 +4,6 @@
   //
   // Modal
   //
-  import TagModalApp from "./TagModal/app.svelte";
   import PeopleModalApp from "./PeopleModal/app.svelte";
   import {
     tagsArray,
@@ -21,6 +20,9 @@
   //
   import moment from "moment";
   import "moment/locale/ko";
+  import App from "./PeopleAddModal/app.svelte";
+  import Chat from "../../routes/Chat/Chat.svelte";
+  import ColumnMenu from "../Home/columnMenu.svelte";
   moment.locale("ko");
 
   // Common Variables
@@ -65,7 +67,7 @@
 
   let posts = { user: { _id: false } };
   let chatFull = { comments: [], tags: [] };
-  let tagsList = [];
+  // let tagsList = [];
   // Feching
   onMount(async () => {
     const getUserId = await fetch(`${$backendServerUrl}/users`, {
@@ -84,11 +86,7 @@
       chatFull = await getChat.json();
       console.log(chatFull);
       comments.set(chatFull.comments);
-      tagsList = chatFull.tags;
-      if (tagsList.length > 0) {
-        tagsArray.set(tagsList);
-        console.log($tagsArray);
-      }
+      tagsArray.set(chatFull.tags);
     } catch (e) {
       console.log("Comments is undefined!");
       comments.set([]);
@@ -111,7 +109,7 @@
     }
   }
   //
-  // Right Box
+  // Date Calculator
   //
   $thisDay = window.location.href.split("/")[5];
   if (!moment($thisDay, "YYYYMMDD").isValid()) {
@@ -155,6 +153,9 @@
 
   let div;
   let autoscroll;
+  let text = "";
+  let tagValue = "";
+
   beforeUpdate(() => {
     autoscroll =
       div && div.offsetHeight + div.scrollTop > div.scrollHeight - 50;
@@ -167,148 +168,315 @@
   function handleKeydown(event) {
     if (event.key === "Enter") {
       event.preventDefault();
-      const text = event.target.value;
       if (!text) return;
-
       $comments = $comments.concat({
         text,
       });
       postChat();
-      event.target.value = "";
+      text = "";
     }
+  }
+  function sendChat() {
+    if (!text) return;
+    $comments = $comments.concat({
+      text,
+    });
+    postChat();
+    text = "";
+  }
+  function sendTag() {
+    if (!tagValue) return;
+    if (tagValue.substr(0, 1) != "#") {
+      tagValue = `#${tagValue}`;
+    }
+    $tagsArray = $tagsArray.concat({
+      text: tagValue,
+    });
+    console.log(tagValue);
+    postChat();
+    tagValue = "";
+  }
+  function removeSpace(event) {
+    event.preventDefault();
   }
 </script>
 
-<container>
-  <div class="header-wrap">
-    <div class="header-tag-wrap">
-      {#each $tagsArray as tags}
-        <span>{tags.tag}</span>
+<div class="menu-wrap">
+  {#each menu as chatObject}
+    <div
+      class={chatObject.class}
+      on:mouseenter={MouseOnMenu}
+      on:mouseleave={MouseLeaveMenu}
+      on:mousedown={MouseClickMenu}
+    >
+      <i class={chatObject.i} />
+      <a href={chatObject.a}>{chatObject.text}</a>
+    </div>
+  {/each}
+  {#if posts.user._id != false}
+    <div
+      on:mouseenter={MouseOnMenu}
+      on:mouseleave={MouseLeaveMenu}
+      on:mousedown={MouseClickMenu}
+    >
+      <i class="fas fa-sign-out-alt" />
+      <a href="{$backendServerUrl}/signout"> 로그아웃 </a>
+    </div>
+  {/if}
+</div>
+<div class="tag-add-wrap">
+  <div class="tag-add-name">
+    <i class="fas fa-hashtag" />
+    <input
+      type="text"
+      placeholder="태그입력"
+      bind:value={tagValue}
+      on:keydown={(e) => e.key === "Enter" && sendTag()}
+      on:keydown={(e) => e.key === " " && removeSpace(e)}
+    />
+    <i class="fas fa-plus" />
+  </div>
+</div>
+<div class="tag-wrap">
+  <div class="tag-inner-wrap">
+    {#each [...$tagsArray].reverse() as tag}
+      <span>{tag.text}</span>
+    {/each}
+  </div>
+</div>
+<div class="people-add-wrap">
+  <div class="people-add-name">
+    <i class="fas fa-user" />
+    <input
+      type="text"
+      placeholder="친구추가"
+      bind:value={tagValue}
+      on:keydown={(e) => e.key === "Enter" && sendTag()}
+      on:keydown={(e) => e.key === " " && removeSpace(e)}
+    />
+    <i class="fas fa-plus" />
+  </div>
+</div>
+<div class="people-wrap">
+  <!-- <p>haha</p> -->
+</div>
+<!-- <div class="header-wrap">
+  <div class="header-tag-wrap">
+    {#each $tagsArray as tags}
+      <span>{tags.tag}</span>
+    {/each}
+  </div>
+  <div class="header-button-wrap">
+    <TagModalApp />
+    <PeopleModalApp />
+    <i class="fas fa-bell" />
+    <i class="fas fa-heart" />
+    <i class="fas fa-bars" />
+  </div>
+</div> -->
+
+<div class="user-wrap">
+  <p>hi</p>
+</div>
+
+<div class="chat-wrap">
+  <div class="today">{todayFull}</div>
+  <div class="chat">
+    <div class="scrollable" bind:this={div}>
+      {#each $comments as comment}
+        <article>
+          <span>{comment.text}</span>
+        </article>
       {/each}
     </div>
-    <div class="header-button-wrap">
-      <!-- <i class="fas fa-plus" /> -->
-      <TagModalApp />
-      <PeopleModalApp />
-      <i class="fas fa-bell" />
-      <i class="fas fa-heart" />
-      <i class="fas fa-bars" />
+  </div>
+  <div class="input-box">
+    <input
+      type="text"
+      placeholder="메세지를 입력하세요."
+      autocomplete="off"
+      bind:value={text}
+      on:keydown={handleKeydown}
+    />
+    <div class="icon-box">
+      <i class="fas fa-paperclip" />
+      <i class="fas fa-paper-plane" on:click={sendChat} />
     </div>
   </div>
-  <div class="menu-wrap">
-    {#each menu as chatObject}
-      <div
-        class={chatObject.class}
-        on:mouseenter={MouseOnMenu}
-        on:mouseleave={MouseLeaveMenu}
-        on:mousedown={MouseClickMenu}
-      >
-        <i class={chatObject.i} />
-        <a href={chatObject.a}>{chatObject.text}</a>
-      </div>
-    {/each}
-    {#if posts.user._id != false}
-      <div
-        on:mouseenter={MouseOnMenu}
-        on:mouseleave={MouseLeaveMenu}
-        on:mousedown={MouseClickMenu}
-      >
-        <i class="fas fa-sign-out-alt" />
-        <a href="{$backendServerUrl}/signout"> 로그아웃 </a>
-      </div>
-    {/if}
-  </div>
-  <div class="user-wrap">
-    <p>hi</p>
-  </div>
-  <div class="chat-wrap">
-    <div class="today">{todayFull}</div>
-    <div class="chat">
-      <div class="scrollable" bind:this={div}>
-        {#each $comments as comment}
-          <article>
-            <span>{comment.text}</span>
-          </article>
-        {/each}
-      </div>
-    </div>
-    <div class="input-box">
-      <textarea on:keydown={handleKeydown} />
-      <div class="icon-box">
-        <i class="fas fa-images" />
-        <i class="fas fa-video" />
-      </div>
-    </div>
-  </div>
-</container>
+</div>
 
 <style lang="scss">
-  container {
-    /* Default Font & Grid */
-    font-family: "Jua";
-    color: #1e1e22d7;
-    grid-area: chat-center;
-    height: 70vh;
-    width: 60vw;
-    margin: {
-      top: 5vh;
-      left: 5vw;
+  $color1: rgb(231, 231, 231);
+  $color1_02: rgba(231, 231, 231, 0.2);
+  $color1_04: rgba(231, 231, 231, 0.4);
+  $color1_06: rgba(231, 231, 231, 0.6);
+  $color1_08: rgba(231, 231, 231, 0.8);
+  $color2: #6470ec;
+  $color3: #7f5ddf;
+  $color4: #f02a9b;
+  $color5: #dd36b0;
+  $color6: #1fded1;
+  $color7: #a652d3;
+  $font_size1: 15px;
+
+  //
+  // TAG
+  //
+  .tag-add-wrap {
+    grid-area: tagAdd;
+    background-color: $color1_02;
+    margin: 5px 5px 0;
+    border-radius: 15px 15px 0 0;
+
+    .tag-add-name {
+      height: 100%;
     }
 
-    /* Default Box */
-    background-color: rgba(238, 138, 138, 1);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    -webkit-backdrop-filter: blur(2.5px);
-    backdrop-filter: blur(2.5px);
-    border-radius: 15px;
+    input {
+      font-size: 15px;
+      margin: 10px 10px 10px 0;
+      border: 0;
+      width: 120px;
+      height: 45px;
+      color: $color1;
+      background-color: transparent;
+      padding: 0 10px;
+      cursor: none;
+      vertical-align: middle;
+    }
 
-    /* Grid Settings */
-    display: grid;
-    grid-template-rows: 1fr 14fr;
-    grid-template-columns: 1fr 7fr 10fr;
-    grid-template-areas:
-      ". header header"
-      "menu user chat";
+    input:focus {
+      outline: none;
+    }
+    input::placeholder {
+      /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: $color1;
+      opacity: 1; /* Firefox */
+    }
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      transition: background-color 50000s;
+      -webkit-text-fill-color: $color1 !important;
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    /*Change text in autofill textbox*/
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-text-fill-color: $color1 !important;
+    }
+
+    i {
+      color: $color1;
+      font-size: 15px;
+    }
+    i:nth-child(1) {
+      margin-left: 30px;
+    }
+  }
+
+  .tag-wrap {
+    grid-area: tagLis;
+    background-color: $color1_02;
+    margin: 0 5px;
+    padding: 0 15px;
+
+    .tag-inner-wrap {
+      height: 100%;
+      overflow-y: scroll;
+    }
+
+    .tag-inner-wrap::-webkit-scrollbar {
+      display: none;
+    }
+
+    span {
+      display: inline-block;
+      margin: 3px;
+      padding: 8px;
+      background-color: $color2;
+      color: $color1;
+      font-size: 13px;
+      border-radius: 5px;
+    }
   }
 
   //
-  // Top-side Header
+  // PEOPLE
   //
+  .people-add-wrap {
+    grid-area: pplAdd;
+    background-color: $color1_02;
+    margin: 0 5px;
 
-  .header-wrap {
-    grid-area: header;
-    /* Default Box */
-    background-color: rgba(255, 255, 255, 0.8);
-    border-top-right-radius: 15px;
+    .people-add-name {
+      height: 100%;
+    }
 
-    /* Grid Settings */
+    input {
+      font-size: 15px;
+      margin: 10px 10px 10px 0;
+      border: 0;
+      width: 120px;
+      height: 45px;
+      color: $color1;
+      background-color: transparent;
+      border-radius: 5px;
+      padding: 0 10px;
+      cursor: none;
+      vertical-align: middle;
+    }
+
+    input:focus {
+      outline: none;
+    }
+    input::placeholder {
+      /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: $color1;
+      opacity: 1; /* Firefox */
+    }
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      transition: background-color 50000s;
+      -webkit-text-fill-color: $color1 !important;
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    /*Change text in autofill textbox*/
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-text-fill-color: $color1 !important;
+    }
+
+    i {
+      color: $color1;
+      font-size: 15px;
+    }
+    i:nth-child(1) {
+      margin-left: 30px;
+    }
+  }
+
+  .people-wrap {
+    grid-area: pplLis;
+    background-color: $color1_02;
+    margin: 0 5px 5px;
+    border-radius: 0 0 15px 15px;
+
     display: grid;
-    grid-template-columns: 6fr 1.5fr;
-    grid-template-areas: "tag button";
-    .header-tag-wrap {
-      grid-area: tag;
-      margin: 2.5vh 0 0 1vw;
-
-      span {
-        background-color: rgb(238, 138, 138);
-        color: rgb(243, 238, 245);
-        border-radius: 1em;
-        word-break: break-all;
-        font-size: 0.7vw;
-        padding: 0.5vh 0.7vw;
-        margin-right: 0.5vw;
-      }
-    }
-    .header-button-wrap {
-      grid-area: button;
-      margin-top: 2.5vh;
-
-      i {
-        font-size: 1vw;
-        color: rgb(161, 131, 185);
-        margin-left: 0.85vw;
-      }
-    }
+    grid-template-rows: 1fr 4fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas:
+      "tag-header1 tag-name tag-header2"
+      "tag-body tag-body tag-body";
   }
 
   //
@@ -316,7 +484,11 @@
   //
 
   .menu-wrap {
-    grid-area: menu;
+    grid-area: quick;
+
+    background-color: $color1_04;
+    border-radius: 15px;
+
     padding: {
       top: 4vh;
     }
@@ -355,50 +527,40 @@
   }
 
   //
-  // Center-side Users
-  //
-
-  .user-wrap {
-    grid-area: user;
-    background-color: rgba(255, 255, 255, 0.8);
-    // border-right: 0.05vh solid rgba(255, 255, 255, 0.7);
-    // background-color: violet;
-  }
-
-  //
   // Right-side Chat
   //
-
   .chat-wrap {
     grid-area: chat;
+    margin: 5px;
 
     /* Grid Settings */
     display: grid;
-    grid-template-rows: 0.1fr 3fr 1fr;
+    grid-template-rows: 1fr 20fr 3fr;
     grid-template-areas:
       "today"
       "chat"
       "inputBox";
 
     /* Default Box */
-    background-color: rgba(255, 255, 255, 0.8);
-    border-bottom-right-radius: 15px;
+    background-color: $color1_04;
+    border-radius: 15px;
 
     .today {
       grid-area: today;
-      margin-top: 2vh;
+      margin-top: 15px;
       text-align: center;
+      color: $color1;
+      font-size: 15px;
     }
     .chat {
       display: flex;
       flex-direction: column;
-      margin: 0.5vh 1vw 0 1vw;
+      margin: 10px 10px 0 10px;
+      max-height: 95%;
       grid-area: chat;
     }
     .scrollable {
-      max-height: 42vh;
       flex: 1 1 auto;
-      margin: 1vh 0.2vw 0;
       overflow-y: scroll;
       article {
         margin: 0.5em 1em;
@@ -410,56 +572,102 @@
       article {
         text-align: right;
         span {
-          background-color: rgb(161, 131, 185);
-          color: rgb(243, 238, 245);
+          background-color: $color1_08;
+          color: $color2;
+          font-size: $font_size1;
           border-radius: 1em 1em 0 1em;
           word-break: break-all;
         }
       }
     }
     .scrollable::-webkit-scrollbar {
-      padding-left: 2vw;
-      width: 0.3vw;
-    }
-    .scrollable::-webkit-scrollbar-thumb {
-      background-color: rgba(238, 138, 138, 0.85);
-    }
-    .scrollable::-webkit-scrollbar-track {
-      background-color: rgb(161, 131, 185);
+      display: none;
     }
 
     .input-box {
       grid-area: inputBox;
-      background-color: rgba(255, 255, 255, 0.7);
-      margin: 0 1vw;
-      height: 12.5vh;
+      margin: 0 25px;
+      padding-top: 20px;
+      height: 100%;
+      border-top: solid 2px $color1;
+      display: inline-flex;
       .icon-box {
-        width: 95%;
-        margin: {
-          top: 1.2vh;
-          left: 1vw;
-        }
-        font-size: 0.8vw;
-        color: rgb(138, 134, 139);
+        display: inline-flex;
+        font-size: 15px;
+        color: $color1;
         i {
-          margin-right: 0.5vw;
+          margin-right: 10px;
         }
       }
     }
-    textarea {
-      font-family: "Jua";
+    input {
       border: 0;
-      width: 95%;
-      height: 5vh;
+      height: 15px;
+      width: 85%;
       background-color: transparent;
-      color: rgb(78, 77, 78);
+      color: $color1;
+      font-size: $font_size1;
       cursor: none;
-      resize: none;
-      overflow: hidden;
       margin: {
-        top: 2vh;
-        left: 1vw;
+        left: 5px;
+        right: 10px;
       }
     }
+    input::placeholder {
+      /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: $color1;
+      opacity: 1; /* Firefox */
+    }
+  }
+
+  // //
+  // // Top-side Header
+  // //
+
+  // .header-wrap {
+  //   grid-area: header;
+  //   /* Default Box */
+  //   background-color: rgba(255, 255, 255, 0.8);
+  //   border-top-right-radius: 15px;
+
+  //   /* Grid Settings */
+  //   display: grid;
+  //   grid-template-columns: 6fr 1.5fr;
+  //   grid-template-areas: "tag button";
+  //   .header-tag-wrap {
+  //     grid-area: tag;
+  //     margin: 2.5vh 0 0 1vw;
+
+  //     span {
+  //       background-color: rgb(238, 138, 138);
+  //       color: rgb(243, 238, 245);
+  //       border-radius: 1em;
+  //       word-break: break-all;
+  //       font-size: 0.7vw;
+  //       padding: 0.5vh 0.7vw;
+  //       margin-right: 0.5vw;
+  //     }
+  //   }
+  //   .header-button-wrap {
+  //     grid-area: button;
+  //     margin-top: 2.5vh;
+
+  //     i {
+  //       font-size: 1vw;
+  //       color: rgb(161, 131, 185);
+  //       margin-left: 0.85vw;
+  //     }
+  //   }
+  // }
+
+  //
+  // Center-side Users
+  //
+
+  .user-wrap {
+    grid-area: user;
+    background-color: rgba(255, 255, 255, 0.8);
+    // border-right: 0.05vh solid rgba(255, 255, 255, 0.7);
+    // background-color: violet;
   }
 </style>

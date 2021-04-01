@@ -13,12 +13,21 @@
   body {
     /* 시스템 커서 안 보이게 숨기기 */
     cursor: none;
-
-    background: url("../../images/background.jpg") no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    background-image: linear-gradient(
+      to right top,
+      #f02a9b,
+      #dd36b0,
+      #c544c3,
+      #a652d3,
+      #7f5ddf,
+      #6470ec,
+      #4280f5,
+      #008ffa,
+      #00a8ff,
+      #00bdf6,
+      #00cfe5,
+      #1fded1
+    );
 
     /* Remove Scroll */
     -ms-overflow-style: none;
