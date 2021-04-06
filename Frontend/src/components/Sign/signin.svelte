@@ -215,7 +215,7 @@
           background-color: transparent;
           cursor: none;
           margin: {
-            top: 20px;
+            top: 18px;
             left: 15px;
           }
         }

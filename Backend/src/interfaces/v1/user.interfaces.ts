@@ -2,7 +2,6 @@ export interface Users {
   username: string
   email: string
   password: string
-  people: { name: string; gender?: string; birth?: number; face?: string; favorite: boolean }[]
 }
 
 export interface Chat {
@@ -11,4 +10,5 @@ export interface Chat {
   comments: { text: string }[]
   date: string
   tags: { tag: string }[]
+  people: { name: string; birth?: number; image?: string; group?: string; notes?: string; favorite: boolean }[]
 }

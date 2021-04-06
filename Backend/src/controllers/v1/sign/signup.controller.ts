@@ -10,8 +10,7 @@ export const input = async (req: express.Request, res: express.Response, next: e
     const db: Db = req.app.locals.db as Db
     const collection: Collection<Users> = db.collection('user')
     const { username, email, password } = req.body as Users
-    const people: [] = []
-    await collection.insertOne({ username, email, password, people })
+    await collection.insertOne({ username, email, password })
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return res.redirect('http://localhost:5000/#/signin')
   } catch (e) {

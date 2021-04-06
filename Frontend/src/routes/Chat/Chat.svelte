@@ -1,5 +1,8 @@
 <script lang="typescript">
   import Chat from "../../components/Chat/chat.svelte";
+
+  // svelte was created with unknown prop 'params'
+  export const params = {};
 </script>
 
 <div class="container">
@@ -12,7 +15,6 @@
     display: grid;
     grid-template-rows: repeat(15, 1fr);
     grid-template-columns: repeat(15, 1fr);
-    column-gap: 5px;
     grid-template-areas: ". . . . . . . . . . . . . . ." //1
       ". . . . . . . . . . . . . . ." //2
       ". . quick . . . . chat chat chat chat tagAdd tagAdd . ." //3

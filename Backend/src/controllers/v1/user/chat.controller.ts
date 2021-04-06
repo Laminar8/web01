@@ -16,9 +16,9 @@ export const getChat = async (req: express.Request, res: express.Response, next:
     const chat = await collection.findOne(query)
     console.log(chat)
     if (chat === null) {
-      return res.send({ comments: [], tags: [] })
+      return res.send({ comments: [], tags: [], people: [] })
     } else {
-      return res.send({ comments: chat?.comments, tags: chat?.tags })
+      return res.send({ comments: chat?.comments, tags: chat?.tags, people: chat?.people })
     }
   } catch (e) {
     next(e)
@@ -29,9 +29,9 @@ export const post = async (req: express.Request, res: express.Response, next: ex
   try {
     const db: Db = req.app.locals.db as Db
     const collection: Collection<Chat> = db.collection('chat')
-    const { userId, author, comments, date, tags } = req.body as Chat
+    const { userId, author, comments, date, tags, people } = req.body as Chat
     const query = { userId: userId, author: author, date: date }
-    const updateDocument = { $setOnInsert: { userId: userId, author: author, date: date }, $set: { comments: comments, tags } }
+    const updateDocument = { $setOnInsert: { userId: userId, author: author, date: date }, $set: { comments: comments, tags, people } }
     const options = { upsert: true }
     await collection.updateOne(query, updateDocument, options)
     return res.send(true)

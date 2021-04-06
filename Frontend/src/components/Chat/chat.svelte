@@ -1,12 +1,8 @@
 <script lang="typescript">
   import { beforeUpdate, afterUpdate, onMount } from "svelte";
-
-  //
-  // Modal
-  //
-  import PeopleModalApp from "./PeopleModal/app.svelte";
   import {
-    tagsArray,
+    peopleArray,
+    tagArray,
     comments,
     userId,
     author,
@@ -14,15 +10,15 @@
     backendServerUrl,
     frontendServerUrl,
   } from "../../stores";
+  import Tag from "./tag.svelte";
+  import People from "./people.svelte";
 
   //
   // Moment Settings
   //
   import moment from "moment";
   import "moment/locale/ko";
-  import App from "./PeopleAddModal/app.svelte";
-  import Chat from "../../routes/Chat/Chat.svelte";
-  import ColumnMenu from "../Home/columnMenu.svelte";
+
   moment.locale("ko");
 
   // Common Variables
@@ -67,7 +63,7 @@
 
   let posts = { user: { _id: false } };
   let chatFull = { comments: [], tags: [] };
-  // let tagsList = [];
+
   // Feching
   onMount(async () => {
     const getUserId = await fetch(`${$backendServerUrl}/users`, {
@@ -86,7 +82,7 @@
       chatFull = await getChat.json();
       console.log(chatFull);
       comments.set(chatFull.comments);
-      tagsArray.set(chatFull.tags);
+      tagArray.set(chatFull.tags);
     } catch (e) {
       console.log("Comments is undefined!");
       comments.set([]);
@@ -132,13 +128,14 @@
   // Mid Box
   //
 
-  async function postChat() {
+  export async function postChat() {
     const postBody = {
       userId: $userId,
       author: $author,
       comments: $comments,
       date: $thisDay,
-      tags: $tagsArray,
+      tags: $tagArray,
+      people: $peopleArray,
     };
     console.log(postBody);
     const res = await fetch(`${$backendServerUrl}/chat`, {
@@ -154,7 +151,6 @@
   let div;
   let autoscroll;
   let text = "";
-  let tagValue = "";
 
   beforeUpdate(() => {
     autoscroll =
@@ -165,39 +161,14 @@
     if (autoscroll) div.scrollTo(0, div.scrollHeight);
   });
 
-  function handleKeydown(event) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      if (!text) return;
-      $comments = $comments.concat({
-        text,
-      });
-      postChat();
-      text = "";
-    }
-  }
   function sendChat() {
     if (!text) return;
     $comments = $comments.concat({
       text,
     });
+
     postChat();
     text = "";
-  }
-  function sendTag() {
-    if (!tagValue) return;
-    if (tagValue.substr(0, 1) != "#") {
-      tagValue = `#${tagValue}`;
-    }
-    $tagsArray = $tagsArray.concat({
-      text: tagValue,
-    });
-    console.log(tagValue);
-    postChat();
-    tagValue = "";
-  }
-  function removeSpace(event) {
-    event.preventDefault();
   }
 </script>
 
@@ -224,45 +195,11 @@
     </div>
   {/if}
 </div>
-<div class="tag-add-wrap">
-  <div class="tag-add-name">
-    <i class="fas fa-hashtag" />
-    <input
-      type="text"
-      placeholder="태그입력"
-      bind:value={tagValue}
-      on:keydown={(e) => e.key === "Enter" && sendTag()}
-      on:keydown={(e) => e.key === " " && removeSpace(e)}
-    />
-    <i class="fas fa-plus" />
-  </div>
-</div>
-<div class="tag-wrap">
-  <div class="tag-inner-wrap">
-    {#each [...$tagsArray].reverse() as tag}
-      <span>{tag.text}</span>
-    {/each}
-  </div>
-</div>
-<div class="people-add-wrap">
-  <div class="people-add-name">
-    <i class="fas fa-user" />
-    <input
-      type="text"
-      placeholder="친구추가"
-      bind:value={tagValue}
-      on:keydown={(e) => e.key === "Enter" && sendTag()}
-      on:keydown={(e) => e.key === " " && removeSpace(e)}
-    />
-    <i class="fas fa-plus" />
-  </div>
-</div>
-<div class="people-wrap">
-  <!-- <p>haha</p> -->
-</div>
+<Tag {postChat} />
+<People {postChat} />
 <!-- <div class="header-wrap">
   <div class="header-tag-wrap">
-    {#each $tagsArray as tags}
+    {#each $tagArray as tags}
       <span>{tags.tag}</span>
     {/each}
   </div>
@@ -293,11 +230,14 @@
   <div class="input-box">
     <input
       type="text"
-      placeholder="메세지를 입력하세요."
+      id="chat"
+      placeholder=" "
+      class="input-box-form"
       autocomplete="off"
       bind:value={text}
-      on:keydown={handleKeydown}
+      on:keydown={(e) => e.key === "Enter" && sendChat()}
     />
+    <label for="chat" class="form-label">메세지를 입력하세요.</label>
     <div class="icon-box">
       <i class="fas fa-paperclip" />
       <i class="fas fa-paper-plane" on:click={sendChat} />
@@ -318,166 +258,6 @@
   $color6: #1fded1;
   $color7: #a652d3;
   $font_size1: 15px;
-
-  //
-  // TAG
-  //
-  .tag-add-wrap {
-    grid-area: tagAdd;
-    background-color: $color1_02;
-    margin: 5px 5px 0;
-    border-radius: 15px 15px 0 0;
-
-    .tag-add-name {
-      height: 100%;
-    }
-
-    input {
-      font-size: 15px;
-      margin: 10px 10px 10px 0;
-      border: 0;
-      width: 120px;
-      height: 45px;
-      color: $color1;
-      background-color: transparent;
-      padding: 0 10px;
-      cursor: none;
-      vertical-align: middle;
-    }
-
-    input:focus {
-      outline: none;
-    }
-    input::placeholder {
-      /* Chrome, Firefox, Opera, Safari 10.1+ */
-      color: $color1;
-      opacity: 1; /* Firefox */
-    }
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-      transition: background-color 50000s;
-      -webkit-text-fill-color: $color1 !important;
-      -webkit-background-clip: text;
-      background-clip: text;
-    }
-    /*Change text in autofill textbox*/
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-      -webkit-text-fill-color: $color1 !important;
-    }
-
-    i {
-      color: $color1;
-      font-size: 15px;
-    }
-    i:nth-child(1) {
-      margin-left: 30px;
-    }
-  }
-
-  .tag-wrap {
-    grid-area: tagLis;
-    background-color: $color1_02;
-    margin: 0 5px;
-    padding: 0 15px;
-
-    .tag-inner-wrap {
-      height: 100%;
-      overflow-y: scroll;
-    }
-
-    .tag-inner-wrap::-webkit-scrollbar {
-      display: none;
-    }
-
-    span {
-      display: inline-block;
-      margin: 3px;
-      padding: 8px;
-      background-color: $color2;
-      color: $color1;
-      font-size: 13px;
-      border-radius: 5px;
-    }
-  }
-
-  //
-  // PEOPLE
-  //
-  .people-add-wrap {
-    grid-area: pplAdd;
-    background-color: $color1_02;
-    margin: 0 5px;
-
-    .people-add-name {
-      height: 100%;
-    }
-
-    input {
-      font-size: 15px;
-      margin: 10px 10px 10px 0;
-      border: 0;
-      width: 120px;
-      height: 45px;
-      color: $color1;
-      background-color: transparent;
-      border-radius: 5px;
-      padding: 0 10px;
-      cursor: none;
-      vertical-align: middle;
-    }
-
-    input:focus {
-      outline: none;
-    }
-    input::placeholder {
-      /* Chrome, Firefox, Opera, Safari 10.1+ */
-      color: $color1;
-      opacity: 1; /* Firefox */
-    }
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-      transition: background-color 50000s;
-      -webkit-text-fill-color: $color1 !important;
-      -webkit-background-clip: text;
-      background-clip: text;
-    }
-    /*Change text in autofill textbox*/
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-      -webkit-text-fill-color: $color1 !important;
-    }
-
-    i {
-      color: $color1;
-      font-size: 15px;
-    }
-    i:nth-child(1) {
-      margin-left: 30px;
-    }
-  }
-
-  .people-wrap {
-    grid-area: pplLis;
-    background-color: $color1_02;
-    margin: 0 5px 5px;
-    border-radius: 0 0 15px 15px;
-
-    display: grid;
-    grid-template-rows: 1fr 4fr;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-areas:
-      "tag-header1 tag-name tag-header2"
-      "tag-body tag-body tag-body";
-  }
 
   //
   // Left-side Menu
@@ -599,7 +379,32 @@
           margin-right: 10px;
         }
       }
+
+      position: relative;
+
+      &-form {
+        border-radius: 0;
+      }
+
+      &-form:not(:placeholder-shown),
+      &-form:focus {
+        ~ .form-label {
+          color: transparent;
+          transition: 0.2s;
+        }
+      }
     }
+
+    .form-label {
+      position: absolute;
+      left: 0;
+      margin: -4px 0 0 5px;
+      font-size: 15px;
+      color: $color1;
+      transition: 0.2s;
+      cursor: none;
+    }
+
     input {
       border: 0;
       height: 15px;
@@ -612,11 +417,6 @@
         left: 5px;
         right: 10px;
       }
-    }
-    input::placeholder {
-      /* Chrome, Firefox, Opera, Safari 10.1+ */
-      color: $color1;
-      opacity: 1; /* Firefox */
     }
   }
 
