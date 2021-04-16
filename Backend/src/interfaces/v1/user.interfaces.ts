@@ -12,3 +12,8 @@ export interface Chat {
   tags: { tag: string }[]
   people: { name: string; birth?: number; image?: string; group?: string; notes?: string; favorite: boolean }[]
 }
+
+export interface People {
+  userId: string
+  people: { name: string; birth?: number; image?: string; group?: string; notes?: string; favorite: boolean }[]
+}

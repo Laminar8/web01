@@ -11,6 +11,7 @@ export const userId = writable(null);
 export const author = writable("user");
 export const comments = writable([]);
 export const thisDay = writable(null);
+export const peopleNow = writable([]);
 
 // Server URL
 export const backendServerUrl = writable("http://localhost:4000/v1");

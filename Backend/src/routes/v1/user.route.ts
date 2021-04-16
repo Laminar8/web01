@@ -1,6 +1,6 @@
 import express from 'express'
 import { get } from '../../controllers/v1/user/user.controller'
-import { getChat, post } from '../../controllers/v1/user/chat.controller'
+import { getChat, getPeople, post, postPeople } from '../../controllers/v1/user/chat.controller'
 import { redirect } from '../../controllers/v1/user/redirect.controller'
 
 export const router = express.Router()
@@ -10,6 +10,10 @@ router.route('/users').get(get)
 // Redirect
 router.route('/chat/change').get(redirect)
 
-// Fronted chat -> Backend DB upload
+// Write DB
 router.route('/chat').post(post)
+router.route('/chat/people').post(postPeople)
+
+// Read DB
 router.route('/chat').get(getChat)
+router.route('/chat/people').get(getPeople)

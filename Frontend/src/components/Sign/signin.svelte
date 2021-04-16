@@ -1,5 +1,4 @@
 <script lang="typescript">
-  import { link } from "svelte-spa-router";
   let name: string;
   let email: string;
   let password: string;

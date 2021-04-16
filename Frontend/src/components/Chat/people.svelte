@@ -1,9 +1,15 @@
 <script lang="typescript">
-  import { peopleArray } from "../../stores";
+  import {
+    peopleNow,
+    peopleArray,
+    userId,
+    backendServerUrl,
+  } from "../../stores";
+  import Amy from "../../../public/images/profile/amy.jpg";
+  import { afterUpdate } from "svelte";
 
   export let postChat: Function;
-
-  let people = {
+  export let people = {
     name: "",
     birth: "",
     image: "",
@@ -17,13 +23,37 @@
     notes: "메모",
   };
 
+  async function postPeople() {
+    const postBody = {
+      userId: $userId,
+      people: $peopleArray,
+    };
+    console.log(postBody);
+    const res = await fetch(`${$backendServerUrl}/chat/people`, {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(postBody),
+    });
+  }
+
+  let addClass = "people-add-etc no-display";
+  let listClass = "people-list-wrap";
+
   function sendPeople() {
     if (!people.name) return;
-    $peopleArray = $peopleArray.concat({ people });
-    console.log(people);
-    console.log(people.name);
+    $peopleArray = $peopleArray.concat({
+      name: people.name,
+      birth: people.birth,
+      image: people.image,
+      group: people.group,
+      notes: people.notes,
+      favorite: people.favorite,
+    });
 
-    postChat();
+    postPeople();
 
     // people 초기화
     for (let key in people) {
@@ -31,6 +61,60 @@
         people[key] = false;
       } else {
         people[key] = "";
+      }
+    }
+
+    addClass = addClass + " no-display";
+    listClass = listClass.split(" ")[0];
+  }
+
+  function changePeople(event: KeyboardEvent) {
+    if (people.name) {
+      addClass = addClass.split(" ")[0];
+      listClass = listClass + " no-display";
+    } else {
+      addClass = addClass + " no-display";
+      listClass = listClass.split(" ")[0];
+    }
+  }
+
+  let personArrayIn = [];
+  let personArrayOut = [];
+  let isLoading = true;
+
+  function updatePerson() {
+    personArrayIn = $peopleArray.filter((person) =>
+      $peopleNow.includes(person)
+    );
+    personArrayOut = $peopleArray.filter(
+      (person) => !$peopleNow.includes(person)
+    );
+
+    isLoading = false;
+    console.log($peopleNow);
+    console.log(personArrayIn);
+  }
+
+  afterUpdate(() => updatePerson());
+
+  function chatPeople(event) {
+    const peopleName = event.path[0].textContent;
+    for (let index in $peopleArray) {
+      if ($peopleArray[index].name == peopleName) {
+        const peopleNowIndex = $peopleNow.findIndex(
+          (people) => people.name == peopleName
+        );
+        console.log(peopleNowIndex);
+
+        if (peopleNowIndex == -1) {
+          $peopleNow = $peopleNow.concat($peopleArray[index]);
+        } else {
+          $peopleNow.splice(peopleNowIndex, 1);
+        }
+        postChat();
+        console.log($peopleNow);
+
+        updatePerson();
       }
     }
   }
@@ -46,13 +130,14 @@
       placeholder=" "
       bind:value={people.name}
       on:keydown={(e) => e.key === "Enter" && sendPeople()}
+      on:keyup={(e) => changePeople(e)}
     />
     <label for="name" class="form-label">이름</label>
     <i class="fas fa-plus" on:click={sendPeople} />
   </div>
 </div>
 <div class="people-wrap">
-  <div class="people-add-etc">
+  <div class={addClass}>
     {#each Object.keys(people) as key}
       {#if !["name", "image", "favorite"].includes(key)}
         <div class="people-add-etc-wrap">
@@ -68,15 +153,48 @@
       {/if}
     {/each}
   </div>
+  <div class={listClass}>
+    {#if isLoading}
+      <p>haha</p>
+    {:else}
+      {#each personArrayIn as person}
+        <div class="people-list color" on:click={(e) => chatPeople(e)}>
+          <div class="people-list-image">
+            {#if person.image}
+              <img src={person.image} alt="profile" />
+            {:else}
+              <img src={Amy} alt="profile" />
+            {/if}
+          </div>
+          <div class="people-list-name">
+            <span>{person.name}</span>
+          </div>
+          <div class="people-list-note">
+            <span>{person.notes}</span>
+          </div>
+        </div>
+      {/each}
+      {#each personArrayOut as person}
+        <div class="people-list" on:click={(e) => chatPeople(e)}>
+          <div class="people-list-image">
+            {#if person.image}
+              <img src={person.image} alt="profile" />
+            {:else}
+              <img src={Amy} alt="profile" />
+            {/if}
+          </div>
+          <div class="people-list-name">
+            <span>{person.name}</span>
+          </div>
+          <div class="people-list-note">
+            <span>{person.notes}</span>
+          </div>
+        </div>
+      {/each}
+    {/if}
+  </div>
 </div>
 
-<!-- <div class="tag-wrap">
-  <div class="tag-inner-wrap">
-    {#each $tagArray as tag}
-      <span>{tag.text}</span>
-    {/each}
-  </div>
-</div> -->
 <style lang="scss">
   $color1: rgb(231, 231, 231);
   $color1_02: rgba(231, 231, 231, 0.2);
@@ -176,7 +294,7 @@
 
     .people-add-etc {
       height: 100%;
-      margin-left: 50px;
+      margin-left: 38px;
       position: relative;
 
       &-form {
@@ -241,5 +359,63 @@
     input:-webkit-autofill:active {
       -webkit-text-fill-color: $color1 !important;
     }
+  }
+
+  .no-display {
+    display: none;
+  }
+
+  .people-list-wrap {
+    margin: 0 5px 5px;
+    height: 90%;
+    overflow-y: scroll;
+    color: $color1;
+
+    .people-list {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-rows: repeat(2, 1fr);
+      grid-template-areas:
+        "image name name"
+        "image notes notes";
+      column-gap: 10px;
+      margin: 5px 25px;
+      padding: 5px 10px 0;
+      height: 55px;
+    }
+    .color {
+      background-color: yellow;
+    }
+
+    .people-list-image {
+      grid-area: image;
+    }
+
+    img {
+      margin: 8px 5px 5px 0px;
+      width: 90%;
+      border-radius: 5px;
+    }
+
+    .people-list-name {
+      grid-area: name;
+      margin: 5px 0 0 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      // background-color: yellow;
+    }
+
+    .people-list-note {
+      grid-area: notes;
+      color: $color1_08;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .people-list-wrap::-webkit-scrollbar {
+    display: none;
   }
 </style>

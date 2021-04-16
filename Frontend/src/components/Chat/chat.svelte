@@ -1,6 +1,7 @@
 <script lang="typescript">
   import { beforeUpdate, afterUpdate, onMount } from "svelte";
   import {
+    peopleNow,
     peopleArray,
     tagArray,
     comments,
@@ -16,6 +17,7 @@
   //
   // Moment Settings
   //
+
   import moment from "moment";
   import "moment/locale/ko";
 
@@ -62,7 +64,8 @@
   //
 
   let posts = { user: { _id: false } };
-  let chatFull = { comments: [], tags: [] };
+  export let chatFull = { comments: [], tags: [], people: [] };
+  let peopleFull = { people: [] };
 
   // Feching
   onMount(async () => {
@@ -70,23 +73,30 @@
       credentials: "include",
     });
     posts = await getUserId.json();
+
     if (posts.user._id == false) {
       window.location.href = `${$frontendServerUrl}/signin`;
     } else {
       userId.set(posts.user._id);
     }
+
+    // router.route('/chat').get(getChat)
     const getChat = await fetch(
       `${$backendServerUrl}/chat/?userId=${$userId}&author=user&date=${$thisDay}`
     );
-    try {
-      chatFull = await getChat.json();
-      console.log(chatFull);
-      comments.set(chatFull.comments);
-      tagArray.set(chatFull.tags);
-    } catch (e) {
-      console.log("Comments is undefined!");
-      comments.set([]);
-    }
+    chatFull = await getChat.json();
+    console.log(chatFull);
+    comments.set(chatFull.comments);
+    tagArray.set(chatFull.tags);
+    peopleNow.set(chatFull.people);
+
+    // router.route('/chat/people').get(getPeople)
+    const getPeople = await fetch(
+      `${$backendServerUrl}/chat/people/?userId=${$userId}`
+    );
+    peopleFull = await getPeople.json();
+    console.log(peopleFull);
+    peopleArray.set(peopleFull.people);
   });
 
   function MouseLeaveMenu(event) {
@@ -104,9 +114,11 @@
       window.location.href = event.path[0].lastChild.href;
     }
   }
+
   //
   // Date Calculator
   //
+
   $thisDay = window.location.href.split("/")[5];
   if (!moment($thisDay, "YYYYMMDD").isValid()) {
     window.location.href = `${$frontendServerUrl}/chat/${moment().format(
@@ -135,8 +147,9 @@
       comments: $comments,
       date: $thisDay,
       tags: $tagArray,
-      people: $peopleArray,
+      people: $peopleNow,
     };
+
     console.log(postBody);
     const res = await fetch(`${$backendServerUrl}/chat`, {
       method: "post",
@@ -148,8 +161,8 @@
     });
   }
 
-  let div;
-  let autoscroll;
+  let div: HTMLDivElement;
+  let autoscroll: Boolean;
   let text = "";
 
   beforeUpdate(() => {
