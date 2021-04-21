@@ -1,5 +1,8 @@
 import { writable } from "svelte/store";
 
+// User
+export const userId = writable(null);
+
 // Tags
 export const tagArray = writable([]);
 
@@ -7,7 +10,6 @@ export const tagArray = writable([]);
 export const peopleArray = writable([]);
 
 // Chat
-export const userId = writable(null);
 export const author = writable("user");
 export const comments = writable([]);
 export const thisDay = writable(null);

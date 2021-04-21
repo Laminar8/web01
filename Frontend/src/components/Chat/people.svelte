@@ -6,9 +6,27 @@
     backendServerUrl,
   } from "../../stores";
   import Amy from "../../../public/images/profile/amy.jpg";
-  import { afterUpdate } from "svelte";
 
   export let postChat: Function;
+  export let updatePerson: Function;
+  export let personArrayIn: {
+    name: string;
+    birth: string;
+    image: string;
+    group: string;
+    notes: string;
+    favorite: boolean;
+  }[];
+  export let personArrayOut: {
+    name: string;
+    birth: string;
+    image: string;
+    group: string;
+    notes: string;
+    favorite: boolean;
+  }[];
+  export let isLoading: boolean;
+
   export let people = {
     name: "",
     birth: "",
@@ -78,27 +96,16 @@
     }
   }
 
-  let personArrayIn = [];
-  let personArrayOut = [];
-  let isLoading = true;
-
-  function updatePerson() {
-    personArrayIn = $peopleArray.filter((person) =>
-      $peopleNow.includes(person)
-    );
-    personArrayOut = $peopleArray.filter(
-      (person) => !$peopleNow.includes(person)
-    );
-
-    isLoading = false;
-    console.log($peopleNow);
-    console.log(personArrayIn);
-  }
-
-  afterUpdate(() => updatePerson());
-
   function chatPeople(event) {
-    const peopleName = event.path[0].textContent;
+    console.log(event);
+    let peopleName = "";
+    for (let index in event.path) {
+      if (event.path[index].classList[0] == "people-list") {
+        peopleName = event.path[index].dataset.value;
+        break;
+      }
+    }
+
     for (let index in $peopleArray) {
       if ($peopleArray[index].name == peopleName) {
         const peopleNowIndex = $peopleNow.findIndex(
@@ -158,7 +165,11 @@
       <p>haha</p>
     {:else}
       {#each personArrayIn as person}
-        <div class="people-list color" on:click={(e) => chatPeople(e)}>
+        <div
+          class="people-list color"
+          data-value={person.name}
+          on:click={(e) => chatPeople(e)}
+        >
           <div class="people-list-image">
             {#if person.image}
               <img src={person.image} alt="profile" />
@@ -175,7 +186,11 @@
         </div>
       {/each}
       {#each personArrayOut as person}
-        <div class="people-list" on:click={(e) => chatPeople(e)}>
+        <div
+          class="people-list"
+          data-value={person.name}
+          on:click={(e) => chatPeople(e)}
+        >
           <div class="people-list-image">
             {#if person.image}
               <img src={person.image} alt="profile" />
@@ -202,6 +217,7 @@
   $color1_06: rgba(231, 231, 231, 0.6);
   $color1_08: rgba(231, 231, 231, 0.8);
   $color2: #6470ec;
+  $color3: #f17ed5;
   $font_size1: 15px;
 
   //
@@ -384,7 +400,8 @@
       height: 55px;
     }
     .color {
-      background-color: yellow;
+      background-color: $color3;
+      border-radius: 5px;
     }
 
     .people-list-image {
@@ -403,7 +420,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      // background-color: yellow;
     }
 
     .people-list-note {

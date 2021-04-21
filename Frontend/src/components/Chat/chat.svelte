@@ -13,6 +13,7 @@
   } from "../../stores";
   import Tag from "./tag.svelte";
   import People from "./people.svelte";
+  import History from "./history.svelte";
 
   //
   // Moment Settings
@@ -64,8 +65,39 @@
   //
 
   let posts = { user: { _id: false } };
-  export let chatFull = { comments: [], tags: [], people: [] };
+  let chatFull = { comments: [], tags: [], people: [] };
   let peopleFull = { people: [] };
+
+  // people.svelte
+  export let personArrayIn = [];
+  export let personArrayOut = [];
+  let isLoading = true;
+
+  // Show selected person on this day
+  function updatePerson() {
+    personArrayIn = [];
+    personArrayOut = [];
+    for (var i = 0; i < $peopleArray.length; i++) {
+      if (
+        JSON.stringify($peopleNow).includes(JSON.stringify($peopleArray[i]))
+      ) {
+        personArrayIn.push($peopleArray[i]);
+      }
+    }
+
+    for (var i = 0; i < $peopleArray.length; i++) {
+      if (
+        !JSON.stringify($peopleNow).includes(JSON.stringify($peopleArray[i]))
+      ) {
+        personArrayOut.push($peopleArray[i]);
+      }
+    }
+
+    isLoading = false;
+    console.log("---------");
+    console.log(personArrayIn);
+    console.log(personArrayOut);
+  }
 
   // Feching
   onMount(async () => {
@@ -85,18 +117,20 @@
       `${$backendServerUrl}/chat/?userId=${$userId}&author=user&date=${$thisDay}`
     );
     chatFull = await getChat.json();
-    console.log(chatFull);
     comments.set(chatFull.comments);
     tagArray.set(chatFull.tags);
     peopleNow.set(chatFull.people);
+    console.log(chatFull);
 
     // router.route('/chat/people').get(getPeople)
     const getPeople = await fetch(
       `${$backendServerUrl}/chat/people/?userId=${$userId}`
     );
     peopleFull = await getPeople.json();
-    console.log(peopleFull);
     peopleArray.set(peopleFull.people);
+    console.log(peopleFull);
+
+    updatePerson();
   });
 
   function MouseLeaveMenu(event) {
@@ -208,26 +242,16 @@
     </div>
   {/if}
 </div>
-<Tag {postChat} />
-<People {postChat} />
-<!-- <div class="header-wrap">
-  <div class="header-tag-wrap">
-    {#each $tagArray as tags}
-      <span>{tags.tag}</span>
-    {/each}
-  </div>
-  <div class="header-button-wrap">
-    <TagModalApp />
-    <PeopleModalApp />
-    <i class="fas fa-bell" />
-    <i class="fas fa-heart" />
-    <i class="fas fa-bars" />
-  </div>
-</div> -->
 
-<div class="user-wrap">
-  <p>hi</p>
-</div>
+<Tag {postChat} />
+<People
+  {postChat}
+  {updatePerson}
+  {personArrayIn}
+  {personArrayOut}
+  {isLoading}
+/>
+<History />
 
 <div class="chat-wrap">
   <div class="today">{todayFull}</div>
