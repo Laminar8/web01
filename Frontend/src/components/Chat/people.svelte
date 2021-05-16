@@ -72,6 +72,7 @@
     });
 
     postPeople();
+    updatePerson();
 
     // people 초기화
     for (let key in people) {
@@ -162,7 +163,7 @@
   </div>
   <div class={listClass}>
     {#if isLoading}
-      <p>haha</p>
+      <p>Loading...</p>
     {:else}
       {#each personArrayIn as person}
         <div
@@ -410,7 +411,7 @@
 
     img {
       margin: 8px 5px 5px 0px;
-      width: 90%;
+      width: 33px;
       border-radius: 5px;
     }
 

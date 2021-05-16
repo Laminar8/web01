@@ -9,6 +9,9 @@ export const tagArray = writable([]);
 // People
 export const peopleArray = writable([]);
 
+// People
+export const historyArray = writable([]);
+
 // Chat
 export const author = writable("user");
 export const comments = writable([]);

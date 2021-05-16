@@ -1,5 +1,6 @@
 // Module Import with Import
 import { Db, Collection } from 'mongodb'
+import axios from 'axios'
 
 // Import Interfaces
 import type express from 'express'
@@ -69,6 +70,41 @@ export const postPeople = async (req: express.Request, res: express.Response, ne
     console.log(people)
     await collection.updateOne(query, updateDocument, options)
     return res.send(true)
+  } catch (e) {
+    next(e)
+  }
+}
+
+interface ServerData {
+  today: string
+}
+
+export const getHistory = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<express.Response | undefined> => {
+  try {
+    const db: Db = req.app.locals.db as Db
+    const collection: Collection<Chat> = db.collection('chat')
+    const userId = req.query.userId as string
+    const query = { userId }
+    const sort = { date: -1 }
+    const projection = { date: 1, tags: 1 }
+    const limit = 8
+    const history = await collection.find(query, { sort, projection, limit }).toArray()
+    console.log(history)
+    if (history === null || history.length <= 1) {
+      return res.send({ history: [] })
+    } else {
+      const response = await axios.get('http://localhost:4000/v1/time')
+      const data = response.data as ServerData
+      const today = data.today
+
+      if (history[0].date == today) {
+        // 오늘 입력된 기록 삭제
+        history.splice(0, 1)
+        return res.send({ history })
+      } else {
+        return res.send({ history })
+      }
+    }
   } catch (e) {
     next(e)
   }

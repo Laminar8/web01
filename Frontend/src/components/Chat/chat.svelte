@@ -4,6 +4,7 @@
     peopleNow,
     peopleArray,
     tagArray,
+    historyArray,
     comments,
     userId,
     author,
@@ -14,6 +15,7 @@
   import Tag from "./tag.svelte";
   import People from "./people.svelte";
   import History from "./history.svelte";
+  import Menu from "./menu.svelte";
 
   //
   // Moment Settings
@@ -24,42 +26,6 @@
 
   moment.locale("ko");
 
-  // Common Variables
-  const menu = [
-    {
-      class: "chatting-btn-wrap",
-      i: "fas fa-comment-dots",
-      a: `${$backendServerUrl}/chat/change/?thisDay=${moment().format(
-        "YYYYMMDD"
-      )}`,
-      text: "채팅",
-    },
-    {
-      class: "schedule-btn-wrap",
-      i: "fas fa-calendar",
-      a: "/#/chat",
-      text: "달력",
-    },
-    {
-      class: "schedule-btn-wrap",
-      i: "fas fa-chart-area",
-      a: "/#/chat",
-      text: "기념일",
-    },
-    {
-      class: "schedule-btn-wrap",
-      i: "fas fa-palette",
-      a: "/#/chat",
-      text: "통계",
-    },
-    {
-      class: "schedule-btn-wrap",
-      i: "fas fa-cog",
-      a: "/#/chat",
-      text: "설정",
-    },
-  ];
-
   //
   // Left Box
   //
@@ -67,6 +33,7 @@
   let posts = { user: { _id: false } };
   let chatFull = { comments: [], tags: [], people: [] };
   let peopleFull = { people: [] };
+  let historyFull = { history: [] };
 
   // people.svelte
   export let personArrayIn = [];
@@ -77,7 +44,7 @@
   function updatePerson() {
     personArrayIn = [];
     personArrayOut = [];
-    for (var i = 0; i < $peopleArray.length; i++) {
+    for (let i = 0; i < $peopleArray.length; i++) {
       if (
         JSON.stringify($peopleNow).includes(JSON.stringify($peopleArray[i]))
       ) {
@@ -85,7 +52,7 @@
       }
     }
 
-    for (var i = 0; i < $peopleArray.length; i++) {
+    for (let i = 0; i < $peopleArray.length; i++) {
       if (
         !JSON.stringify($peopleNow).includes(JSON.stringify($peopleArray[i]))
       ) {
@@ -94,9 +61,6 @@
     }
 
     isLoading = false;
-    console.log("---------");
-    console.log(personArrayIn);
-    console.log(personArrayOut);
   }
 
   // Feching
@@ -131,23 +95,15 @@
     console.log(peopleFull);
 
     updatePerson();
+
+    // router.route('/chat/history').get(getHistory)
+    const getHistory = await fetch(
+      `${$backendServerUrl}/chat/history/?userId=${$userId}`
+    );
+    historyFull = await getHistory.json();
+    historyArray.set(historyFull.history);
+    console.log(historyFull);
   });
-
-  function MouseLeaveMenu(event) {
-    event.target.lastChild.style.display = "none";
-  }
-
-  function MouseOnMenu(event) {
-    event.target.lastChild.style.display = "inline";
-  }
-
-  function MouseClickMenu(event) {
-    if (event.path[0].tagName == "I") {
-      window.location.href = event.path[1].lastChild.href;
-    } else {
-      window.location.href = event.path[0].lastChild.href;
-    }
-  }
 
   //
   // Date Calculator
@@ -159,7 +115,7 @@
       "YYYYMMDD"
     )}`;
   }
-  const today = moment($thisDay).format("YYYY년 MM월");
+  // const today = moment($thisDay).format("YYYY년 MM월");
   const todayFull = moment($thisDay).format("YYYY년 MM월 DD일 dddd");
   const dayArray = [];
   for (let i = -3; i < 2; i++) {
@@ -219,30 +175,7 @@
   }
 </script>
 
-<div class="menu-wrap">
-  {#each menu as chatObject}
-    <div
-      class={chatObject.class}
-      on:mouseenter={MouseOnMenu}
-      on:mouseleave={MouseLeaveMenu}
-      on:mousedown={MouseClickMenu}
-    >
-      <i class={chatObject.i} />
-      <a href={chatObject.a}>{chatObject.text}</a>
-    </div>
-  {/each}
-  {#if posts.user._id != false}
-    <div
-      on:mouseenter={MouseOnMenu}
-      on:mouseleave={MouseLeaveMenu}
-      on:mousedown={MouseClickMenu}
-    >
-      <i class="fas fa-sign-out-alt" />
-      <a href="{$backendServerUrl}/signout"> 로그아웃 </a>
-    </div>
-  {/if}
-</div>
-
+<Menu />
 <Tag {postChat} />
 <People
   {postChat}
@@ -297,55 +230,9 @@
   $font_size1: 15px;
 
   //
-  // Left-side Menu
-  //
-
-  .menu-wrap {
-    grid-area: quick;
-
-    background-color: $color1_04;
-    border-radius: 15px;
-
-    padding: {
-      top: 4vh;
-    }
-    div {
-      margin-top: 2vh;
-      padding-left: 1.1vw;
-      height: 7vh;
-      color: rgba(229, 224, 231, 0.85);
-      font-size: 1.2vw;
-    }
-    i {
-      height: 5.2vh;
-      width: 27px;
-      padding-top: 2.1vh;
-    }
-    a {
-      color: rgba(229, 224, 231, 0.85);
-      background-color: rgb(238, 138, 138);
-      height: 5.2vh;
-      width: 8vw;
-      padding: 1.8vh 0 0 1.5vw;
-      margin-left: 0.81vw;
-      appearance: button;
-      cursor: none;
-      position: absolute;
-      display: none;
-    }
-    a:visited {
-      color: rgba(229, 224, 231, 0.85);
-      text-decoration: none;
-    }
-    a:hover {
-      color: rgba(229, 224, 231, 0.85);
-      text-decoration: none;
-    }
-  }
-
-  //
   // Right-side Chat
   //
+
   .chat-wrap {
     grid-area: chat;
     margin: 5px;
@@ -455,56 +342,5 @@
         right: 10px;
       }
     }
-  }
-
-  // //
-  // // Top-side Header
-  // //
-
-  // .header-wrap {
-  //   grid-area: header;
-  //   /* Default Box */
-  //   background-color: rgba(255, 255, 255, 0.8);
-  //   border-top-right-radius: 15px;
-
-  //   /* Grid Settings */
-  //   display: grid;
-  //   grid-template-columns: 6fr 1.5fr;
-  //   grid-template-areas: "tag button";
-  //   .header-tag-wrap {
-  //     grid-area: tag;
-  //     margin: 2.5vh 0 0 1vw;
-
-  //     span {
-  //       background-color: rgb(238, 138, 138);
-  //       color: rgb(243, 238, 245);
-  //       border-radius: 1em;
-  //       word-break: break-all;
-  //       font-size: 0.7vw;
-  //       padding: 0.5vh 0.7vw;
-  //       margin-right: 0.5vw;
-  //     }
-  //   }
-  //   .header-button-wrap {
-  //     grid-area: button;
-  //     margin-top: 2.5vh;
-
-  //     i {
-  //       font-size: 1vw;
-  //       color: rgb(161, 131, 185);
-  //       margin-left: 0.85vw;
-  //     }
-  //   }
-  // }
-
-  //
-  // Center-side Users
-  //
-
-  .user-wrap {
-    grid-area: user;
-    background-color: rgba(255, 255, 255, 0.8);
-    // border-right: 0.05vh solid rgba(255, 255, 255, 0.7);
-    // background-color: violet;
   }
 </style>
